@@ -10,10 +10,10 @@
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
-extern string Ïapàìåòðû="Íàñòðîéêè ñîâåòíèêà";
+extern string �ap�穫疇簷簸羶="��簽簷簸簾矇礙癡 簽簾璽疇簷穩癡礙�";
 extern int LotsBuy=8;
 extern int LotsSell=8;
-extern string Ïapàìåòðû1="Ïàðàìåòðû îðäåðîâ";
+extern string �ap�穫疇簷簸羶1="��簸�穫疇簷簸羶 簾簸瓣疇簸簾璽";
 extern bool BuyTrade=true;
 extern bool SellTrade=true;
 extern int TP=10;
@@ -21,7 +21,7 @@ extern int Magic_Number=3213;
 extern int Percent=30;
 extern int CriticalCoef=5;
 extern bool DinamicLot=true;
-extern string Ïapàìåòðû2="Óðîâíè îòêðûòèÿ îðäåðîâ Buy/Sell";
+extern string �ap�穫疇簷簸羶2="�簸簾璽穩癡 簾簷礙簸羶簷癡藩 簾簸瓣疇簸簾璽 Buy/Sell";
 extern double Level1=100;
 extern double Level2=150;
 extern double Level3=200;
@@ -42,7 +42,7 @@ extern double Level17=1100;
 extern double Level18=1200;
 extern double Level19=1300;
 extern double Level20=1400;
-extern string Ïapàìåòðû5="Ëîòû îðäåðîâ Buy/Sell";
+extern string �ap�穫疇簷簸羶5="�簾簷羶 簾簸瓣疇簸簾璽 Buy/Sell";
 extern double Lot1=0.1;
 extern double Lot2=0.2;
 extern double Lot3=0.4;
@@ -131,7 +131,7 @@ int start()
   {
    if(IsDemo()==false) 
      {
-      Alert("Íåâåðíûé ñ÷åò!");
+      Alert("�疇璽疇簸穩羶矇 簽繩疇簷!");
       Sleep(6000);return(0);
      }
  
@@ -161,7 +161,7 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Pr
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    for(int i=0;i<total;i++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(i,SELECT_BY_POS)==true)
         {
          if(OrderSymbol()==Symbol()) 
@@ -173,7 +173,7 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Pr
         }
      }
 
-//#Óäàëåíèå ëèìèòíûõ îðäåðîâ
+//#�瓣�禱疇穩癡疇 禱癡穫癡簷穩羶繭 簾簸瓣疇簸簾璽
    if(CountBuy==0)
      {
       for(int iDel=OrdersTotal()-1; iDel>=0; iDel--)
@@ -183,7 +183,7 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Pr
            {
             if(OrderDelete(OrderTicket())<0)
               {
-               Alert("Îøèáêà óäàëåíèÿ îðäåðà ¹ ",GetLastError());
+               Alert("�繪癡獺礙� 籀瓣�禱疇穩癡藩 簾簸瓣疇簸� 繒 ",GetLastError());
               }
            }
         }
@@ -197,92 +197,48 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Pr
            {
             if(OrderDelete(OrderTicket())<0)
               {
-               Alert("Îøèáêà óäàëåíèÿ îðäåðà ¹ ",GetLastError());
+               Alert("�繪癡獺礙� 籀瓣�禱疇穩癡藩 簾簸瓣疇簸� 繒 ",GetLastError());
               }
            }
         }
      }
-//#Ïîèñê îáùåãî TP äëÿ BUY
-   if((CountBuy!=0) && (CountBuy!=1))
-     {
-      double BuyOrderTP=0;
-      bool CalculateNow=false;
-      for(int iss=0;iss<OrdersTotal();iss++)
-        {
-         // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
-         if(OrderSelect(iss,SELECT_BY_POS)==true)
-           {
-            if(OrderSymbol()==Symbol()) 
-              {
-               if(OrderType()==OP_BUY)
-                 {
-                  if(BuyOrderTP==0){BuyOrderTP=OrderTakeProfit();}if(BuyOrderTP!=OrderTakeProfit()){CalculateNow=true;}
-                 }
-              }
-           }
-        }
-      if(CalculateNow==true){CalculateTotalBuyTP();}
-     }
-//#Ïîèñê îáùåãî TP äëÿ SELL
-   if((CountSell!=0) && (CountSell!=1))
-     {
-      double SellOrderTP=0;
-      bool CalculateNow=false;
-      for(int is=0;is<OrdersTotal();is++)
-        {
-         // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
-         if(OrderSelect(is,SELECT_BY_POS)==true)
-           {
-            if(OrderSymbol()==Symbol()) 
-              {
-               if(OrderType()==OP_SELL)
-                 {
-                  if(SellOrderTP==0){SellOrderTP=OrderTakeProfit();}if(SellOrderTP!=OrderTakeProfit()){CalculateNow=true;}
-                 }
-              }
-           }
-        }
 
-      if(CalculateNow==true){CalculateTotalSellTP();}
-     }
-     
-     
 if (TotalSlt!=0){ GoGoBuy=TotalSlt*Percent/100/Lot1;}
 if (GoGoBuy<1) {GoGoBuy=1;}if (GoGoBuy>CriticalCoef){GoGoBuy=CriticalCoef;}
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ���������� ������");GoGoBuy=AccountEquity()/100000;}
-//#Ïåðâûé îðäåð buy
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("冓嚭鷒� 縺欑錪膼蜦 闉麧譇");GoGoBuy=AccountEquity()/100000;}
+//#�疇簸璽羶矇 簾簸瓣疇簸 buy
    if((CountBuy==0) && (BuyTrade==true))
      {
-      Print("Îòêðûòèå ïåðâîãî îðäåðà íà ïîêóïêó");
+      Print("�簷礙簸羶簷癡疇 簿疇簸璽簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_BUY,Lot1,Ask,3*k,NULL,Ask+TP*Point*k,"Sun-Lot1-buy(1)",Magic_Number,0,Blue)<0)
-           {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+         if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot1,Ask,3*k,NULL,Ask+TP*Point*k,"Sun-Lot1-buy(1)",Magic_Number,0,Blue)<0)
+           {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
         }
 
      }
-//#Ïåðâûé îðäåð sell
+//#�疇簸璽羶矇 簾簸瓣疇簸 sell
    if((CountSell==0) && (SellTrade==true))
      {
      if (TotalBLt!=0){GoGoSell=TotalBLt*Percent/100/Lot1;}
 if (GoGoSell<1) {GoGoSell=1;} if (GoGoSell>CriticalCoef){GoGoSell=CriticalCoef;}
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ���������� ������");GoGoSell=AccountEquity()/100000;}
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("冓嚭鷒� 縺欑錪膼蜦 闉麧譇");GoGoSell=AccountEquity()/100000;}
      
-      Print("Îòêðûòèå ïåðâîãî îðäåðà íà ïðîäàæó");
+      Print("�簷礙簸羶簷癡疇 簿疇簸璽簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_SELL,Lot1,Bid,3*k,NULL,Bid-TP*Point*k,"Sun-Lot1-sell(1)",Magic_Number,0,Red)<0)
-           {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+         if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot1,Bid,3*k,NULL,Bid-TP*Point*k,"Sun-Lot1-sell(1)",Magic_Number,0,Red)<0)
+           {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
         }
      }
 
      
-      //#Âòîðîé îðäåð buy
+      //#�簷簾簸簾矇 簾簸瓣疇簸 buy
       if((CountBuy==1) && (BuyTrade==true))
         {
          for(int ibuy=0;ibuy<OrdersTotal();ibuy++)
            {
-            // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+            // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
             if(OrderSelect(ibuy,SELECT_BY_POS)==true)
               {
                if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) 
@@ -294,23 +250,23 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level1*k*Point))
            {
             
-            Print("Îòêðûòèå âòîðîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 璽簷簾簸簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot2,Ask,3*k,NULL,NULL,"Sun-Lot2-buy(2)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot2,Ask,3*k,NULL,NULL,"Sun-Lot2-buy(2)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Âòîðîé îðäåð sell
+      //#�簷簾簸簾矇 簾簸瓣疇簸 sell
       if((CountSell==1) && (SellTrade==true))
         {
          for(int isell=0;isell<OrdersTotal();isell++)
            {
-            // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+            // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
             if(OrderSelect(isell,SELECT_BY_POS)==true)
               {
                if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL))
@@ -320,18 +276,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level1*k*Point))
            {
             CalculateSellTP();
-            Print("Îòêðûòèå âòîðîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 璽簷簾簸簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot2,Ask,3*k,NULL,NULL,"Sun-Lot2-sell(2)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot2,Ask,3*k,NULL,NULL,"Sun-Lot2-sell(2)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
              
               }
            }
         }
 
 
-      //#Òðåòèé îðäåð buy
+      //#�簸疇簷癡矇 簾簸瓣疇簸 buy
       if((CountBuy==2) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -339,18 +295,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level2*k*Point))
            {
         
-            Print("Îòêðûòèå òðåòüåãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簷簸疇簷羹疇瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot3,Ask,3*k,NULL,NULL,"Sun-Lot3-buy(3)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot3,Ask,3*k,NULL,NULL,"Sun-Lot3-buy(3)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //Òðåòèé îðäåð sell
+      //�簸疇簷癡矇 簾簸瓣疇簸 sell
       if((CountSell==2) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -358,17 +314,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level2*k*Point))
            {
          
-            Print("Îòêðûòèå òðåòüåãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簷簸疇簷羹疇瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot3,Ask,3*k,NULL,NULL,"Sun-Lot3-sell(3)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot3,Ask,3*k,NULL,NULL,"Sun-Lot3-sell(3)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
-      //#×åòâåðòûé îðäåð buy
+      //#�疇簷璽疇簸簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==3) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -376,18 +332,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level3*k*Point))
            {
            
-            Print("Îòêðûòèå ÷åòâåðòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 繩疇簷璽疇簸簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot4,Ask,3*k,NULL,NULL,"Sun-Lot4-buy(4)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot4,Ask,3*k,NULL,NULL,"Sun-Lot4-buy(4)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
 
               }
            }
         }
 
 
-      //#×åòâåðòûé îðäåð sell
+      //#�疇簷璽疇簸簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==3) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -395,18 +351,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level3*k*Point))
            {
             
-            Print("Îòêðûòèå ÷åòâåðòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 繩疇簷璽疇簸簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot4,Ask,3*k,NULL,NULL,"Sun-Lot4-sell(4)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot4,Ask,3*k,NULL,NULL,"Sun-Lot4-sell(4)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
             
               }
            }
         }
 
 
-      //#Ïÿòûé îðäåð buy
+      //#�藩簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==4) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -414,18 +370,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level4*k*Point))
            {
             
-            Print("Îòêðûòèå ïÿòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簿藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot5,Ask,3*k,NULL,NULL,"Sun-Lot5-buy(5)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot5,Ask,3*k,NULL,NULL,"Sun-Lot5-buy(5)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
            
               }
            }
         }
 
 
-      //#Ïÿòûé îðäåð sell
+      //#�藩簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==4) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -433,17 +389,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level4*k*Point))
            {
          ;
-            Print("Îòêðûòèå ïÿòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簿藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot5,Ask,3*k,NULL,NULL,"Sun-Lot5-sell(5)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot5,Ask,3*k,NULL,NULL,"Sun-Lot5-sell(5)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
            
               }
            }
         }
 
-      //#Øåñòîé îðäåð buy
+      //#�疇簽簷簾矇 簾簸瓣疇簸 buy
       if((CountBuy==5) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -451,18 +407,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level5*k*Point))
            {
         
-            Print("Îòêðûòèå øåñòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 繪疇簽簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot6,Ask,3*k,NULL,NULL,"Sun-Lot6-buy(6)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot6,Ask,3*k,NULL,NULL,"Sun-Lot6-buy(6)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#Øåñòîé îðäåð sell
+      //#�疇簽簷簾矇 簾簸瓣疇簸 sell
       if((CountSell==5) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -470,16 +426,16 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level5*k*Point))
            {
             
-            Print("Îòêðûòèå øåñòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 繪疇簽簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot6,Ask,3*k,NULL,NULL,"Sun-Lot6-sell(6)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot6,Ask,3*k,NULL,NULL,"Sun-Lot6-sell(6)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
-      //#Ñåäüìîé îðäåð buy
+      //#�疇瓣羹穫簾矇 簾簸瓣疇簸 buy
       if((CountBuy==6) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -487,18 +443,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level6*k*Point))
            {
           
-            Print("Îòêðûòèå ñåäüìîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簽疇瓣羹穫簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot7,Ask,3*k,NULL,NULL,"Sun-Lot7-buy(7)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot7,Ask,3*k,NULL,NULL,"Sun-Lot7-buy(7)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#Ñåäüìîé îðäåð sell
+      //#�疇瓣羹穫簾矇 簾簸瓣疇簸 sell
       if((CountSell==6) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -506,18 +462,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level6*k*Point))
            {
            
-            Print("Îòêðûòèå ñåäüìîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簽疇瓣羹穫簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot7,Ask,3*k,NULL,NULL,"Sun-Lot7-sell(7)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot7,Ask,3*k,NULL,NULL,"Sun-Lot7-sell(7)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Âîñüìîé îðäåð buy
+      //#�簾簽羹穫簾矇 簾簸瓣疇簸 buy
       if((CountBuy==7) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -525,18 +481,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level7*k*Point))
            {
            
-            Print("Îòêðûòèå âîñüìîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 璽簾簽羹穫簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-buy(8)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-buy(8)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Âîñüìîé îðäåð sell
+      //#�簾簽羹穫簾矇 簾簸瓣疇簸 sell
       if((CountSell==7) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -544,18 +500,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level7*k*Point))
            {
             
-            Print("Îòêðûòèå âîñüìîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 璽簾簽羹穫簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-sell(8)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-sell(8)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Äåâÿòûé îðäåð buy
+      //#�疇璽藩簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==8) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -563,18 +519,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level8*k*Point))
            {
            
-            Print("Îòêðûòèå äåâÿòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 瓣疇璽藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot9,Ask,3*k,NULL,NULL,"Sun-Lot9-buy(9)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot9,Ask,3*k,NULL,NULL,"Sun-Lot9-buy(9)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#Äåâÿòûé îðäåð sell
+      //#�疇璽藩簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==8) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -582,17 +538,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level8*k*Point))
            {
             
-            Print("Îòêðûòèå äåâÿòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 瓣疇璽藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot9,Ask,3*k,NULL,NULL,"Sun-Lot9-sell(9)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot9,Ask,3*k,NULL,NULL,"Sun-Lot9-sell(9)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
              
               }
            }
         }
 
-      //#Äåñÿòûé îðäåð buy
+      //#�疇簽藩簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==9) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -600,18 +556,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level9*k*Point))
            {
             
-            Print("Îòêðûòèå äåñÿòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 瓣疇簽藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot10,Ask,3*k,NULL,NULL,"Sun-Lot10-buy(10)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot10,Ask,3*k,NULL,NULL,"Sun-Lot10-buy(10)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#Äåñÿòûé îðäåð sell
+      //#�疇簽藩簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==9) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -619,18 +575,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level9*k*Point))
            {
          
-            Print("Îòêðûòèå äåñÿòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 瓣疇簽藩簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot10,Ask,3*k,NULL,NULL,"Sun-Lot10-sell(10)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot10,Ask,3*k,NULL,NULL,"Sun-Lot10-sell(10)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Îäèííàäöàòûé îðäåð buy
+      //#�瓣癡穩穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==10) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -638,18 +594,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level10*k*Point))
            {
             
-            Print("Îòêðûòèå îäèííàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簾瓣癡穩穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot11,Ask,3*k,NULL,NULL,"Sun-Lot11-buy(11)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot11,Ask,3*k,NULL,NULL,"Sun-Lot11-buy(11)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#Îäèííàäöàòûé îðäåð sell
+      //#�瓣癡穩穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==10) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -657,17 +613,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level10*k*Point))
            {
             
-            Print("Îòêðûòèå îäèííàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簾瓣癡穩穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot11,Ask,3*k,NULL,NULL,"Sun-Lot11-sell(11)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot11,Ask,3*k,NULL,NULL,"Sun-Lot11-sell(11)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
-      //#Äâåíàäöàòûé îðäåð buy
+      //#�璽疇穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==11) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -675,18 +631,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level11*k*Point))
            {
             
-            Print("Îòêðûòèå äâåíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 瓣璽疇穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot12,Ask,3*k,NULL,NULL,"Sun-Lot12-buy(12)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot12,Ask,3*k,NULL,NULL,"Sun-Lot12-buy(12)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Äâåíàäöàòûé îðäåð sell
+      //#�璽疇穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==11) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -694,17 +650,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level11*k*Point))
            {
             
-            Print("Îòêðûòèå äâåíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 瓣璽疇穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot12,Ask,3*k,NULL,NULL,"Sun-Lot12-sell(12)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot12,Ask,3*k,NULL,NULL,"Sun-Lot12-sell(12)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
-      //#Òðèíàäöàòûé îðäåð buy
+      //#�簸癡穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==12) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -712,18 +668,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level12*k*Point))
            {
           
-            Print("Îòêðûòèå òðèíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簷簸癡穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot13,Ask,3*k,NULL,NULL,"Sun-Lot13-buy(13)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot13,Ask,3*k,NULL,NULL,"Sun-Lot13-buy(13)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Òðèíàäöàòûé îðäåð sell
+      //#�簸癡穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==12) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -731,18 +687,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level12*k*Point))
            {
             
-            Print("Îòêðûòèå òðèíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簷簸癡穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot13,Ask,3*k,NULL,NULL,"Sun-Lot13-sell(13)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot13,Ask,3*k,NULL,NULL,"Sun-Lot13-sell(13)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
 
 
-      //#×åòûðíàäöàòûé îðäåð buy
+      //#�疇簷羶簸穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==13) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -750,18 +706,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level13*k*Point))
            {
            
-            Print("Îòêðûòèå ÷åòûðíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 繩疇簷羶簸穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot14,Ask,3*k,NULL,NULL,"Sun-Lot14-buy(14)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot14,Ask,3*k,NULL,NULL,"Sun-Lot14-buy(14)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#×åòûðíàäöàòûé îðäåð sell
+      //#�疇簷羶簸穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==13) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -769,17 +725,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level13*k*Point))
            {
            
-            Print("Îòêðûòèå ÷åòûðíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 繩疇簷羶簸穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot14,Ask,3*k,NULL,NULL,"Sun-Lot14-sell(14)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot14,Ask,3*k,NULL,NULL,"Sun-Lot14-sell(14)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
-      //#Ïÿòíàäöàòûé îðäåð buy
+      //#�藩簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==14) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -787,18 +743,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level14*k*Point))
            {
             
-            Print("Îòêðûòèå ïÿòíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簿藩簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot15,Ask,3*k,NULL,NULL,"Sun-Lot15-buy(15)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot15,Ask,3*k,NULL,NULL,"Sun-Lot15-buy(15)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
              
               }
            }
         }
 
 
-      //#Ïÿòíàäöàòûé îðäåð sell
+      //#�藩簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==14) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -806,17 +762,17 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level14*k*Point))
            {
             CalculateSellTP();
-            Print("Îòêðûòèå ïÿòíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簿藩簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot15,Ask,3*k,NULL,NULL,"Sun-Lot15-sell(15)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot15,Ask,3*k,NULL,NULL,"Sun-Lot15-sell(15)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
-      //#Øåñòíàäöàòûé îðäåð buy
+      //#�疇簽簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==15) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -824,18 +780,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level15*k*Point))
            {
           
-            Print("Îòêðûòèå øåñòíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 繪疇簽簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot16,Ask,3*k,NULL,NULL,"Sun-Lot16-buy(16)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot16,Ask,3*k,NULL,NULL,"Sun-Lot16-buy(16)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Øåñòíàäöàòûé îðäåð sell
+      //#�疇簽簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==15) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -843,16 +799,16 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level15*k*Point))
            {
             
-            Print("Îòêðûòèå øåñòíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 繪疇簽簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot16,Ask,3*k,NULL,NULL,"Sun-Lot16-sell(16)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot16,Ask,3*k,NULL,NULL,"Sun-Lot16-sell(16)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
-      //#Ñåìíàäöàòûé îðäåð buy
+      //#�疇穫穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==16) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -860,18 +816,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level16*k*Point))
            {
             
-            Print("Îòêðûòèå ñåìíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 簽疇穫穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot17,Ask,3*k,NULL,NULL,"Sun-Lot17-buy(17)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot17,Ask,3*k,NULL,NULL,"Sun-Lot17-buy(17)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Ñåìíàäöàòûé îðäåð sell
+      //#�疇穫穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==16) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -879,16 +835,16 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level16*k*Point))
            {
             
-            Print("Îòêðûòèå ñåìíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 簽疇穫穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot17,Ask,3*k,NULL,NULL,"Sun-Lot17-sell(17)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot17,Ask,3*k,NULL,NULL,"Sun-Lot17-sell(17)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
               
               }
            }
         }
-      //#Âîñåìíàäöàòûé îðäåð buy
+      //#�簾簽疇穫穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==17) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -896,18 +852,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level17*k*Point))
            {
             
-            Print("Îòêðûòèå âîñåìíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 璽簾簽疇穫穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot18,Ask,3*k,NULL,NULL,"Sun-Lot18-buy(18)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot18,Ask,3*k,NULL,NULL,"Sun-Lot18-buy(18)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Âîñåìíàäöàòûé îðäåð sell
+      //#�簾簽疇穫穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==17) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -915,16 +871,16 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level17*k*Point))
            {
             
-            Print("Îòêðûòèå âîñåìíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 璽簾簽疇穫穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot18,Ask,3*k,NULL,NULL,"Sun-Lot18-sell(18)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot18,Ask,3*k,NULL,NULL,"Sun-Lot18-sell(18)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
-      //#Äåâÿòíàäöàòûé îðäåð buy
+      //#�疇璽藩簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==18) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -932,18 +888,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level18*k*Point))
            {
             
-            Print("Îòêðûòèå äåâÿòíàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 瓣疇璽藩簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot19,Ask,3*k,NULL,NULL,"Sun-Lot19-buy(19)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot19,Ask,3*k,NULL,NULL,"Sun-Lot19-buy(19)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Äåâÿòíàäöàòûé îðäåð sell
+      //#�疇璽藩簷穩�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==18) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -951,16 +907,16 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level18*k*Point))
            {
             
-            Print("Îòêðûòèå äåâÿòíàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 瓣疇璽藩簷穩�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot19,Ask,3*k,NULL,NULL,"Sun-Lot19-sell(19)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot19,Ask,3*k,NULL,NULL,"Sun-Lot19-sell(19)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
-      //#Äâàäöàòûé îðäåð buy
+      //#�璽�瓣繹�簷羶矇 簾簸瓣疇簸 buy
       if((CountBuy==19) && (BuyTrade==true))
         {
          SearchLastBuyPrice();
@@ -968,18 +924,18 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Ask<(LastBuyPrice-Level19*k*Point))
            {
             
-            Print("Îòêðûòèå äâàäöàòîãî îðäåðà íà ïîêóïêó");
+            Print("�簷礙簸羶簷癡疇 瓣璽�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,Lot20,Ask,3*k,NULL,NULL,"Sun-Lot20-buy(20)",Magic_Number,0,Blue)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot20,Ask,3*k,NULL,NULL,"Sun-Lot20-buy(20)",Magic_Number,0,Blue)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
         }
 
 
-      //#Äâàäöàòûé îðäåð sell
+      //#�璽�瓣繹�簷羶矇 簾簸瓣疇簸 sell
       if((CountSell==19) && (SellTrade==true))
         {
          SearchLastSellPrice();
@@ -987,11 +943,11 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
          if(Bid>(LastSellPrice+Level19*k*Point))
            {
       
-            Print("Îòêðûòèå äâàäöàòîãî îðäåðà íà ïðîäàæó");
+            Print("�簷礙簸羶簷癡疇 瓣璽�瓣繹�簷簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,Lot20,Ask,3*k,NULL,NULL,"Sun-Lot20-sell(20)",Magic_Number,0,Red)<0)
-                 {Alert("Îøèáêà îòêðûòèÿ ïîçèöèè ¹ ",GetLastError()); }
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot20,Ask,3*k,NULL,NULL,"Sun-Lot20-sell(20)",Magic_Number,0,Red)<0)
+                 {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
                
               }
            }
@@ -1006,7 +962,7 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ����������
 
    return(0);
   }
-//#Ðàññ÷¸ò èòîãîâîãî ïðîôèòà îðäåðîâ íà ïîêóïêó
+//#��簽簽繩繡簷 癡簷簾瓊簾璽簾瓊簾 簿簸簾繫癡簷� 簾簸瓣疇簸簾璽 穩� 簿簾礙籀簿礙籀
 double CalculateBuyTP()
   {
    RefreshRates();
@@ -1015,7 +971,7 @@ double CalculateBuyTP()
    double PriceB=Ask;
    for(int ibuyResult=0;ibuyResult<OrdersTotal();ibuyResult++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(ibuyResult,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) {PriceB=PriceB+OrderOpenPrice();CountB=CountB+1;}
@@ -1024,7 +980,7 @@ double CalculateBuyTP()
    TPB=PriceB/CountB+TP*Point*k;
    return(TPB);
   }
-//#Ðàññ÷¸ò èòîãîâîãî ïðîôèòà îðäåðîâ íà ïîêóïêó
+//#��簽簽繩繡簷 癡簷簾瓊簾璽簾瓊簾 簿簸簾繫癡簷� 簾簸瓣疇簸簾璽 穩� 簿簾礙籀簿礙籀
 double CalculateTotalBuyTP()
   {
 TPB=0;
@@ -1033,7 +989,7 @@ TPB=0;
    int CountB=0;
    for(int ibuy2Result=0;ibuy2Result<OrdersTotal();ibuy2Result++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(ibuy2Result,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) {PriceB=PriceB+OrderOpenPrice()*OrderLots();BuyLots=BuyLots+OrderLots();CountB=CountB+1;}
@@ -1043,7 +999,7 @@ TPB=0;
      {
       TPB=PriceB/BuyLots+TP*Point*k;
       for(int ibuy3Result=0;ibuy3Result<OrdersTotal();ibuy3Result++)
-        { // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+        { // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
          if(OrderSelect(ibuy3Result,SELECT_BY_POS)==true)
            {
             if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) 
@@ -1058,7 +1014,7 @@ TPB=0;
   }  
   
 
-//#Ðàññ÷¸ò èòîãîâîãî ïðîôèòà îðäåðîâ íà ïðîäàæó
+//#��簽簽繩繡簷 癡簷簾瓊簾璽簾瓊簾 簿簸簾繫癡簷� 簾簸瓣疇簸簾璽 穩� 簿簸簾瓣�疆籀
 double CalculateSellTP()
   {
    TPS=0;
@@ -1066,7 +1022,7 @@ double CalculateSellTP()
    double PriceS=Bid;
    for(int isellResult=0;isellResult<OrdersTotal();isellResult++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(isellResult,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)) {PriceS=PriceS+OrderOpenPrice();CountS=CountS+1;}
@@ -1086,7 +1042,7 @@ double CalculateSellTP()
    double PriceS=0;
    for(int isell2Result=0;isell2Result<OrdersTotal();isell2Result++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(isell2Result,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)) {CountS=CountS+1;PriceS=PriceS+OrderOpenPrice()*OrderLots();SellLots=SellLots+OrderLots();}
@@ -1096,7 +1052,7 @@ double CalculateSellTP()
      {
       TPS=PriceS/SellLots-TP*Point*k;
       for(int isell4Result=0;isell4Result<OrdersTotal();isell4Result++)
-        { // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+        { // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
          if(OrderSelect(isell4Result,SELECT_BY_POS)==true)
            {
             if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)) 
@@ -1111,13 +1067,13 @@ double CalculateSellTP()
   } 
 
   
-//#Ïîèñê ïîñëåäíåãî îðäåðà íà ïîêóïêó
+//#�簾癡簽礙 簿簾簽禱疇瓣穩疇瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀
 double SearchLastBuyPrice()
   {
    LastBuyPrice=0;
    for(int ibuySearch=0;ibuySearch<OrdersTotal();ibuySearch++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(ibuySearch,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY))
@@ -1129,13 +1085,13 @@ double SearchLastBuyPrice()
      }
    return(LastBuyPrice);
   }
-//#Ïîèñê ïîñëåäíåãî îðäåðà íà ïðîäàæó
+//#�簾癡簽礙 簿簾簽禱疇瓣穩疇瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀
 double SearchLastSellPrice()
   {
    LastSellPrice=0;
    for(int isellSearch=0;isellSearch<OrdersTotal();isellSearch++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(isellSearch,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL))
@@ -1147,13 +1103,13 @@ double SearchLastSellPrice()
      }
    return(LastSellPrice);
   }
-//#Ïîèñê ïîñëåäíåãî ëèìèòíîãî îðäåðà íà ïîêóïêó
+//#�簾癡簽礙 簿簾簽禱疇瓣穩疇瓊簾 禱癡穫癡簷穩簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀
 double SearchLastLimBuyPrice()
   {
    LastBuyPrice=0;
    for(int ibuySearch1=0;ibuySearch1<OrdersTotal();ibuySearch1++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(ibuySearch1,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUYLIMIT))
@@ -1165,14 +1121,14 @@ double SearchLastLimBuyPrice()
      }
    return(LastBuyPrice);
   }
-//#Ïîèñê ïîñëåäíåãî ëèìèòíîãî îðäåðà íà ïðîäàæó
+//#�簾癡簽礙 簿簾簽禱疇瓣穩疇瓊簾 禱癡穫癡簷穩簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀
 double SearchLastLimSellPrice()
   {
    LastSellPrice=0;
    
    for(int isellSearch1=0;isellSearch1<OrdersTotal();isellSearch1++)
      {
-      // ðåçóëüòàò âûáîðà ïðîâåðêè, òàê êàê îðäåð ìîæåò áûòü çàêðûò èëè óäàëåí â ýòî âðåìÿ!
+      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
       if(OrderSelect(isellSearch1,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELLLIMIT))
@@ -1332,7 +1288,7 @@ bool isNewBar()
      }
    return(res);
   }
-//---- Âîçâðàùàåò êîëè÷åñòâî îðäåðîâ óêàçàííîãî òèïà îðäåðîâ ----//
+//---- �簾癟璽簸�羅�疇簷 礙簾禱癡繩疇簽簷璽簾 簾簸瓣疇簸簾璽 籀礙�癟�穩穩簾瓊簾 簷癡簿� 簾簸瓣疇簸簾璽 ----//
 int Orders_Total_by_type(int type,int mn,string sym)
   {
    int num_orders=0;
