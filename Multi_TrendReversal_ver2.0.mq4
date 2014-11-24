@@ -155,8 +155,8 @@ if((CountBuy!=0)&&(CloseLokB==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLot
 if((CountSell!=0)&&(CloseLokS==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
  
  
- if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit();Print(FirstBuyOrderProfit,SellOrdersProfit); if((SellOrdersProfit+FirstBuyOrderProfit)>0){CloseFirstBuySellOrders();}}
-if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Print(FirstSellOrderProfit,BuyOrdersProfit);if((BuyOrdersProfit+FirstSellOrderProfit)>0){CloseFirstSellBuyOrders();}}
+ if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){CloseFirstBuySellOrders();}}
+if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){CloseFirstSellBuyOrders();}}
  
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    for(int i=0;i<total;i++)
@@ -1141,7 +1141,7 @@ double SearchLastLimSellPrice()
    return(LastSellPrice);
   }
   double SearchFirstBuyOrderProfit() {
-   FirstBuyOrderProfit=0;
+   Ticket=0;
    FirstBuyPrice=0;
    for(int iFBSearch=0;iFBSearch<OrdersTotal();iFBSearch++)
      {
@@ -1149,17 +1149,16 @@ double SearchLastLimSellPrice()
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
            {
-            if(FirstBuyPrice==0){FirstBuyPrice=OrderOpenPrice();FirstBuyOrderProfit=OrderProfit();}
-            if(FirstBuyPrice<OrderOpenPrice()){FirstBuyPrice=OrderOpenPrice();FirstBuyOrderProfit=OrderProfit();}
+            if(FirstBuyPrice==0){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
+            if(FirstBuyPrice<OrderOpenPrice()){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
            }
         }
      }
-     Print("FirstBuyOrderProfit",FirstBuyOrderProfit); 
-   return(FirstBuyOrderProfit);
+   return(Ticket);
   }
   
     double SearchFirstSellOrderProfit() {
-   FirstSellOrderProfit=0;
+   Ticket=0;
    FirstSellPrice=0;
    for(int iFSSearch=0;iFSSearch<OrdersTotal();iFSSearch++)
      {
@@ -1167,13 +1166,13 @@ double SearchLastLimSellPrice()
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&& (Magic_Number==OrderMagicNumber()))
            {
-            if(FirstSellPrice==0){FirstSellPrice=OrderOpenPrice();FirstSellOrderProfit=OrderProfit();}
-            if(FirstSellPrice>OrderOpenPrice()){FirstSellPrice=OrderOpenPrice();FirstSellOrderProfit=OrderProfit();}
+            if(FirstSellPrice==0){FirstSellPrice=OrderOpenPrice();Ticket=OrderTicket();}
+            if(FirstSellPrice>OrderOpenPrice()){FirstSellPrice=OrderOpenPrice();Ticket=OrderTicket();}
            }
         }
      }
    
-   return(FirstSellOrderProfit);
+   return(Ticket);
   }
   
   double SearchLokBuyOrdersProfit() {
@@ -1208,31 +1207,20 @@ double SearchLastLimSellPrice()
   } 
  double CloseFirstBuySellOrders()
   {
-  Ticket=0;
-   FirstBuyPrice=0;
-    for(int iFBSSearch=0;iFBSSearch<OrdersTotal();iFBSSearch++)
+     for(int iFBSSearch=0;iFBSSearch<OrdersTotal();iFBSSearch++)
      {
       if(OrderSelect(iFBSSearch,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (Magic_Number==OrderMagicNumber()))
            {
            if (OrderType()==OP_SELL) { OrderClose(OrderTicket(),OrderLots(),Bid,3*k,Black);}
-            if (OrderType()==OP_BUY) {  
-            for(int iFBSSearch=0;iFBSSearch<OrdersTotal();iFBSSearch++)
-      {
-      if(OrderSelect(iFBSSearch,SELECT_BY_POS)==true)
-        {
-         if(( OrderSymbol()==Symbol()) && (Magic_Number==OrderMagicNumber()))
-           {
-            if(FirstBuyPrice==0){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
-            if(FirstBuyPrice<OrderOpenPrice()){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
+             
+           }
            }
         }
-      } 
-           } 
-           }
-           }
-        }OrderClose(Ticket,OrderLots(),Ask,3*k,Black);
+        SearchFirstBuyOrderProfit();
+        OrderClose(Ticket,OrderLots(),Ask,3*k,Black);
+        
       return(0);
   } 
   
@@ -1248,22 +1236,10 @@ double SearchLastLimSellPrice()
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&& (Magic_Number==OrderMagicNumber()))
            {
            if (OrderType()==OP_BUY) { OrderClose(OrderTicket(),OrderLots(),Ask,3*k,Black);}
-            if (OrderType()==OP_SELL) {  
-            for(int iFBS=0;iFBS<OrdersTotal();iFBS++)
-      {
-      if(OrderSelect(iFBS,SELECT_BY_POS)==true)
-        {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&& (Magic_Number==OrderMagicNumber()))
-           {
-            if(FirstSellPrice==0){FirstSellPrice=OrderOpenPrice();Ticket=OrderTicket();}
-            if(FirstSellPrice>OrderOpenPrice()){FirstSellPrice=OrderOpenPrice();Ticket=OrderTicket();}
-           }
-        }
-      }  OrderClose(Ticket,OrderLots(),Bid,3*k,Black);
            }
            }
-           }
-        }
+        }SearchFirstSellOrderProfit();
+      OrderClose(Ticket,OrderLots(),Bid,3*k,Black);
       return(0);
   } 
 //+------------------------------------------------------------------+
