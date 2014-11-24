@@ -18,6 +18,9 @@ extern bool BuyTrade=true;
 extern bool SellTrade=true;
 extern int TP=10;
 extern int Magic_Number=3213;
+extern int Percent=30;
+extern int CriticalCoef=5;
+extern bool DinamicLot=true;
 extern string Ïapàìåòðû2="Óðîâíè îòêðûòèÿ îðäåðîâ Buy/Sell";
 extern double Level1=100;
 extern double Level2=150;
@@ -64,6 +67,8 @@ extern double Lot20=4;
 
 
 int k;
+double GoGoBuy=1;
+double GoGoSell=1;
 bool StartBuyOrders;
 bool StartSellOrders;
 int CountBuy;
@@ -94,6 +99,9 @@ int NumSLimOrders;
 int NumBLimOrders;
 double FirstBuyOrderProfit;
 double FirstSellOrderProfit;
+double FirstBuyPrice;
+double FirstSellPrice;
+int Ticket;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -126,12 +134,12 @@ int start()
       Alert("Íåâåðíûé ñ÷åò!");
       Sleep(6000);return(0);
      }
-//Ïðîâåðêà èçìåíåíèé â ñîâåòíèêå   
+ 
    ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;CloseLokB=false;CloseLokS=false;
    for(int in=0;in<OrdersTotal();in++)
      {      if(OrderSelect(in,SELECT_BY_POS)==true)
         {
-         if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number()) 
+         if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number) )
            {
             if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="16")||(OrderComment()=="17")){CloseLokB=true;}}
             if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="16")||(OrderComment()=="17")){CloseLokS=true;}}
@@ -147,8 +155,8 @@ if((CountBuy!=0)&&(CloseLokB==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLot
 if((CountSell!=0)&&(CloseLokS==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
  
  
- if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){CloseFirstBuy-SellOrders();}}
-if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){CloseFirstSell-BuyOrders();}}
+ if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit();Print(FirstBuyOrderProfit,SellOrdersProfit); if((SellOrdersProfit+FirstBuyOrderProfit)>0){CloseFirstBuySellOrders();}}
+if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Print(FirstSellOrderProfit,BuyOrdersProfit);if((BuyOrdersProfit+FirstSellOrderProfit)>0){CloseFirstSellBuyOrders();}}
  
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    for(int i=0;i<total;i++)
@@ -237,6 +245,11 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();if
 
       if(CalculateNow==true){CalculateTotalSellTP();}
      }
+     
+     
+if (TotalSlt!=0){ GoGoBuy=TotalSlt*Percent/100/Lot1;}
+if (GoGoBuy<1) {GoGoBuy=1;}if (GoGoBuy>CriticalCoef){GoGoBuy=CriticalCoef;}
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ���������� ������");GoGoBuy=AccountEquity()/100000;}
 //#Ïåðâûé îðäåð buy
    if((CountBuy==0) && (BuyTrade==true))
      {
@@ -251,6 +264,10 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();if
 //#Ïåðâûé îðäåð sell
    if((CountSell==0) && (SellTrade==true))
      {
+     if (TotalBLt!=0){GoGoSell=TotalBLt*Percent/100/Lot1;}
+if (GoGoSell<1) {GoGoSell=1;} if (GoGoSell>CriticalCoef){GoGoSell=CriticalCoef;}
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("������� ���������� ������");GoGoSell=AccountEquity()/100000;}
+     
       Print("Îòêðûòèå ïåðâîãî îðäåðà íà ïðîäàæó");
       if(IsTradeAllowed()) 
         {
@@ -1174,7 +1191,7 @@ double SearchLastLimSellPrice()
      {
       if(OrderSelect(iFBSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Buy)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
            {
             if(FirstBuyPrice==0){FirstBuyPrice=OrderOpenPrice();FirstBuyOrderProfit=OrderProfit();}
             if(FirstBuyPrice>OrderOpenPrice()){FirstBuyPrice=OrderOpenPrice();FirstBuyOrderProfit=OrderProfit();}
@@ -1192,7 +1209,7 @@ double SearchLastLimSellPrice()
      {
       if(OrderSelect(iFSSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Sell)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&& (Magic_Number==OrderMagicNumber()))
            {
             if(FirstSellPrice==0){FirstSellPrice=OrderOpenPrice();FirstSellOrderProfit=OrderProfit();}
             if(FirstSellPrice<OrderOpenPrice()){FirstSellPrice=OrderOpenPrice();FirstSellOrderProfit=OrderProfit();}
@@ -1209,7 +1226,7 @@ double SearchLastLimSellPrice()
      {
       if(OrderSelect(iFBBSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Buy)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
            {
            BuyOrdersProfit=BuyOrdersProfit+OrderProfit();
            }
@@ -1224,7 +1241,7 @@ double SearchLastLimSellPrice()
      {
       if(OrderSelect(iFBBSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Buy)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
            {
            SellOrdersProfit=SellOrdersProfit+OrderProfit();
            }
@@ -1232,15 +1249,15 @@ double SearchLastLimSellPrice()
         }
       return(SellOrdersProfit);
   } 
- double CloseFirstBuy-SellOrders()
+ double CloseFirstBuySellOrders()
   {
   Ticket=0;
-  FirstBuyPrice=0;
+   FirstBuyPrice=0;
     for(int iFBSSearch=0;iFBSSearch<OrdersTotal();iFBSSearch++)
      {
       if(OrderSelect(iFBSSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Buy)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
            {
            if (OrderType()==OP_SELL) { OrderClose(OrderTicket(),OrderLots(),Bid,3*k,Black);}
             if (OrderType()==OP_BUY) {  
@@ -1248,7 +1265,7 @@ double SearchLastLimSellPrice()
       {
       if(OrderSelect(iFBSearch,SELECT_BY_POS)==true)
         {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_Buy)&& (Magic_Number==OrderMagicNumber()))
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY )&& (Magic_Number==OrderMagicNumber()))
            {
             if(FirstBuyPrice==0){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
             if(FirstBuyPrice>OrderOpenPrice()){FirstBuyPrice=OrderOpenPrice();Ticket=OrderTicket();}
@@ -1263,7 +1280,7 @@ double SearchLastLimSellPrice()
   } 
   
   
-   double CloseFirstSell-BuyOrders()
+   double CloseFirstSellBuyOrders()
   {
   Ticket=0;
   FirstSellPrice=0;
