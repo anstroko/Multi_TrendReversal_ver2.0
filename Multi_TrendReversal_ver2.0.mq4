@@ -146,13 +146,12 @@ int start()
            }
         }
      }
-if ((ReCountBuy==1)&&(CloseLokS==false)){CalculateTotalBuyTP();}
-if ((ReCountSell==1)&&(CloseLokB==false)){CalculateTotalSellTP();}
+
   
 
-if((CountBuy!=0)&&(CloseLokB==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
+if((ReCountBuy!=0)&&(CloseLokS==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
 
-if((CountSell!=0)&&(CloseLokS==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
+if((ReCountSell!=0)&&(CloseLokB==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
  
  
  if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){CloseFirstBuySellOrders();}}
@@ -952,34 +951,10 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("冓嚭鷒� 縺�
               }
            }
         }
-
-
-
-
-        
-
-
-
    return(0);
   }
 //#��簽簽繩繡簷 癡簷簾瓊簾璽簾瓊簾 簿簸簾繫癡簷� 簾簸瓣疇簸簾璽 穩� 簿簾礙籀簿礙籀
-double CalculateBuyTP()
-  {
-   RefreshRates();
-   TPB=0;
-   int CountB=1;
-   double PriceB=Ask;
-   for(int ibuyResult=0;ibuyResult<OrdersTotal();ibuyResult++)
-     {
-      // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
-      if(OrderSelect(ibuyResult,SELECT_BY_POS)==true)
-        {
-         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) {PriceB=PriceB+OrderOpenPrice();CountB=CountB+1;}
-        }
-     }
-   TPB=PriceB/CountB+TP*Point*k;
-   return(TPB);
-  }
+
 //#��簽簽繩繡簷 癡簷簾瓊簾璽簾瓊簾 簿簸簾繫癡簷� 簾簸瓣疇簸簾璽 穩� 簿簾礙籀簿礙籀
 double CalculateTotalBuyTP()
   {
