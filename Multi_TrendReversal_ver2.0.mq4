@@ -1040,6 +1040,7 @@ double CalculateSellTP()
    TPS=0;
    int CountS=0;
    double PriceS=0;
+   SellLots=0;
    for(int isell2Result=0;isell2Result<OrdersTotal();isell2Result++)
      {
       // 簸疇癟籀禱羹簷�簷 璽羶獺簾簸� 簿簸簾璽疇簸礙癡, 簷�礙 礙�礙 簾簸瓣疇簸 穫簾疆疇簷 獺羶簷羹 癟�礙簸羶簷 癡禱癡 籀瓣�禱疇穩 璽 羸簷簾 璽簸疇穫藩!
@@ -1202,7 +1203,7 @@ double SearchLastLimSellPrice()
            }
            }
         }
-        Print("SellOrdersProfit",SellOrdersProfit);
+    
       return(SellOrdersProfit);
   } 
  double CloseFirstBuySellOrders()
@@ -1219,7 +1220,7 @@ double SearchLastLimSellPrice()
            }
         }
         SearchFirstBuyOrderProfit();
-        OrderClose(Ticket,OrderLots(),Ask,3*k,Black);
+     Print("Ticket orderBuy",Ticket); OrderSelect(Ticket, SELECT_BY_TICKET);   OrderClose(Ticket,OrderLots(),Ask,3*k,Black);
         
       return(0);
   } 
@@ -1238,7 +1239,7 @@ double SearchLastLimSellPrice()
            if (OrderType()==OP_BUY) { OrderClose(OrderTicket(),OrderLots(),Ask,3*k,Black);}
            }
            }
-        }SearchFirstSellOrderProfit();
+        }SearchFirstSellOrderProfit();OrderSelect(Ticket, SELECT_BY_TICKET); 
       OrderClose(Ticket,OrderLots(),Bid,3*k,Black);
       return(0);
   } 
