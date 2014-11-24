@@ -146,8 +146,8 @@ int start()
            }
         }
      }
-
-
+if ((ReCountBuy==1)&&(CloseLokS==false)){CalculateTotalBuyTP();}
+if ((ReCountSell==1)&&(CloseLokB==false)){CalculateTotalSellTP();}
   
 
 if((CountBuy!=0)&&(CloseLokB==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
@@ -212,7 +212,7 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("冓嚭鷒� 縺�
       Print("�簷礙簸羶簷癡疇 簿疇簸璽簾瓊簾 簾簸瓣疇簸� 穩� 簿簾礙籀簿礙籀");
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot1,Ask,3*k,NULL,Ask+TP*Point*k,"Sun-Lot1-buy(1)",Magic_Number,0,Blue)<0)
+         if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot1,Ask,3*k,NULL,NULL,"Sun-Lot1-buy(1)",Magic_Number,0,Blue)<0)
            {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
         }
 
@@ -227,7 +227,7 @@ if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("冓嚭鷒� 縺�
       Print("�簷礙簸羶簷癡疇 簿疇簸璽簾瓊簾 簾簸瓣疇簸� 穩� 簿簸簾瓣�疆籀");
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot1,Bid,3*k,NULL,Bid-TP*Point*k,"Sun-Lot1-sell(1)",Magic_Number,0,Red)<0)
+         if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot1,Bid,3*k,NULL,NULL,"Sun-Lot1-sell(1)",Magic_Number,0,Red)<0)
            {Alert("�繪癡獺礙� 簾簷礙簸羶簷癡藩 簿簾癟癡繹癡癡 繒 ",GetLastError()); }
         }
      }
@@ -995,7 +995,7 @@ TPB=0;
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) {PriceB=PriceB+OrderOpenPrice()*OrderLots();BuyLots=BuyLots+OrderLots();CountB=CountB+1;}
         }
      }
-   if(CountB>1)
+   if(CountB>0)
      {
       TPB=PriceB/BuyLots+TP*Point*k;
       for(int ibuy3Result=0;ibuy3Result<OrdersTotal();ibuy3Result++)
@@ -1049,7 +1049,7 @@ double CalculateSellTP()
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)) {CountS=CountS+1;PriceS=PriceS+OrderOpenPrice()*OrderLots();SellLots=SellLots+OrderLots();}
         }
      }
-   if(CountS>1)
+   if(CountS>0)
      {
       TPS=PriceS/SellLots-TP*Point*k;
       for(int isell4Result=0;isell4Result<OrdersTotal();isell4Result++)
