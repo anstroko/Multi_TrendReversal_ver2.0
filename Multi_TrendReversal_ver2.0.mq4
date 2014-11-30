@@ -140,8 +140,8 @@ int start()
         {
          if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number) )
            {
-            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")){CloseLokB=true;}}
-            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")){CloseLokS=true;}}
+            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="15")||(OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")){CloseLokB=true;}}
+            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="25")||(OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")){CloseLokS=true;}}
            }
         }
      }
