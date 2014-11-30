@@ -64,7 +64,7 @@ extern double Lot19=3.8;
 extern double Lot20=4;
 
 
-
+int TP1;
 int k;
 double GoGoBuy=1;
 double GoGoSell=1;
@@ -140,8 +140,8 @@ int start()
         {
          if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number) )
            {
-            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="16")||(OrderComment()=="17")){CloseLokB=true;}}
-            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="26")||(OrderComment()=="27")){CloseLokS=true;}}
+            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")){CloseLokB=true;}}
+            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")){CloseLokS=true;}}
            }
         }
      }
@@ -159,7 +159,7 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Or
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    for(int i=0;i<total;i++)
      {
-      // з°ёз–‡з™џз±Ђз¦±зѕ№з°·пїЅз°· з’Ѕзѕ¶зЌєз°ѕз°ёпїЅ з°їз°ёз°ѕз’Ѕз–‡з°ёз¤™з™Ў, з°·пїЅз¤™ з¤™пїЅз¤™ з°ѕз°ёз“Јз–‡з°ё з©«з°ѕз–†з–‡з°· зЌєзѕ¶з°·зѕ№ з™џпїЅз¤™з°ёзѕ¶з°· з™Ўз¦±з™Ў з±Ђз“ЈпїЅз¦±з–‡з©© з’Ѕ зѕёз°·з°ѕ з’Ѕз°ёз–‡з©«и—©!
+     
       if(OrderSelect(i,SELECT_BY_POS)==true)
         {
          if(OrderSymbol()==Symbol()) 
@@ -171,7 +171,7 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Or
         }
      }
 
-//#пїЅз“ЈпїЅз¦±з–‡з©©з™Ўз–‡ з¦±з™Ўз©«з™Ўз°·з©©зѕ¶з№­ з°ѕз°ёз“Јз–‡з°ёз°ѕз’Ѕ
+//#Удаление лимитных ордеров
    if(CountBuy==0)
      {
       for(int iDel=OrdersTotal()-1; iDel>=0; iDel--)
@@ -202,38 +202,41 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Or
      }
 
 
-//#пїЅз–‡з°ёз’Ѕзѕ¶зџ‡ з°ѕз°ёз“Јз–‡з°ё buy
+//#Открытие первого ордера buy
    if((CountBuy==0) && (BuyTrade==true))
      {
      
 if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Расчёт начального ордера");GoGoBuy=AccountEquity()/MM;}
 if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==false)){GoGoBuy=1;}
-if (TotalSlt!=0){Print("Расчет начального ордера BuyStop от общего числа открытых ордеров Sell"); GoGoBuy=TotalSlt*Percent/100/Lot1;   }
+if (TotalSlt!=0){Print("Расчет начального ордера BuyStop от общего числа открытых ордеров Sell"); GoGoBuy=TotalSlt*Percent/100/Lot1;if ((AccountEquity()/MM)>(TotalSlt*Percent/100/Lot1)){GoGoBuy=(AccountEquity()/MM);}   }
 if ((GoGoBuy<1)&&(DinamicLot==true)) {Print("Условия ММ не выполняются!!! Маленький депозит!!!");GoGoBuy=1;}if (GoGoBuy>CriticalCoef){Print("Начальный лот ограничен значением переменной CriticalCoef");GoGoBuy=CriticalCoef;}
 Sleep(2000);
       Print("Размещение первого ордера на покупку ");
+      if (CloseLokS==true){TP1=TP;}
+      else {TP1=NULL;}
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot1,Ask,3*k,NULL,NULL,"Sun-Lot1-buy(1)",Magic_Number,0,Blue)<0)
-           {Alert("пїЅз№Єз™ЎзЌєз¤™пїЅ з°ѕз°·з¤™з°ёзѕ¶з°·з™Ўи—© з°їз°ѕз™џз™Ўз№№з™Ўз™Ў з№’ ",GetLastError()); }
+         if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot1,Ask,3*k,NULL,Ask+TP1*Point*k,"11",Magic_Number,0,Blue)<0)
+           {Alert("Произошла ошибка",GetLastError()); }
         }
 
      }
-//#пїЅз–‡з°ёз’Ѕзѕ¶зџ‡ з°ѕз°ёз“Јз–‡з°ё sell
+//#Открытие первого ордера sell
    if((CountSell==0) && (SellTrade==true))
      {
 if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Расчёт начального ордера");GoGoSell=AccountEquity()/MM;}
 if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==false)){GoGoSell=1;} 
-if (TotalBLt!=0){Print("Расчет начального ордера Sell от общего числа открытых ордеров Buy"); GoGoSell=TotalBLt*Percent/100/Lot1;}
+if (TotalBLt!=0){Print("Расчет начального ордера Sell от общего числа открытых ордеров Buy"); GoGoSell=TotalBLt*Percent/100/Lot1;if ((AccountEquity()/MM)>(TotalBLt*Percent/100/Lot1)){GoGoSell=(AccountEquity()/MM);}}
 if ((GoGoSell<1)&&(DinamicLot==true)) {Print("Условия ММ не выполняются!! Маленький депозит!!");GoGoSell=1;} if (GoGoSell>CriticalCoef){Print("Начальный лот ограничен значением переменной CriticalCoef");GoGoSell=CriticalCoef;}
 Print ("Открытие 1-го ордера");
 Sleep(2000);
-     
-      Print("пїЅз°·з¤™з°ёзѕ¶з°·з™Ўз–‡ з°їз–‡з°ёз’Ѕз°ѕз“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ёз°ѕз“ЈпїЅз–†з±Ђ");
+    if (CloseLokB==true){TP1=TP;}
+      else {TP1=NULL;}
+      Print("Размещение первого ордера на продажу");
       if(IsTradeAllowed()) 
         {
-         if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot1,Bid,3*k,NULL,NULL,"Sun-Lot1-sell(1)",Magic_Number,0,Red)<0)
-           {Alert("пїЅз№Єз™ЎзЌєз¤™пїЅ з°ѕз°·з¤™з°ёзѕ¶з°·з™Ўи—© з°їз°ѕз™џз™Ўз№№з™Ўз™Ў з№’ ",GetLastError()); }
+         if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot1,Bid,3*k,NULL,Bid-TP1*Point*k,"21",Magic_Number,0,Red)<0)
+           {Alert("Произошла ошибка",GetLastError()); }
         }
      }
 
@@ -489,7 +492,7 @@ Sleep(2000);
             Print("пїЅз°·з¤™з°ёзѕ¶з°·з™Ўз–‡ з’Ѕз°ѕз°Ѕзѕ№з©«з°ѕз“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ѕз¤™з±Ђз°їз¤™з±Ђ");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-buy(8)",Magic_Number,0,Blue)<0)
+               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot8,Ask,3*k,NULL,NULL,"18",Magic_Number,0,Blue)<0)
                  {Alert("пїЅз№Єз™ЎзЌєз¤™пїЅ з°ѕз°·з¤™з°ёзѕ¶з°·з™Ўи—© з°їз°ѕз™џз™Ўз№№з™Ўз™Ў з№’ ",GetLastError()); }
                
               }
@@ -508,7 +511,7 @@ Sleep(2000);
             Print("пїЅз°·з¤™з°ёзѕ¶з°·з™Ўз–‡ з’Ѕз°ѕз°Ѕзѕ№з©«з°ѕз“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ёз°ѕз“ЈпїЅз–†з±Ђ");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot8,Ask,3*k,NULL,NULL,"Sun-Lot8-sell(8)",Magic_Number,0,Red)<0)
+               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot8,Ask,3*k,NULL,NULL,"28",Magic_Number,0,Red)<0)
                  {Alert("пїЅз№Єз™ЎзЌєз¤™пїЅ з°ѕз°·з¤™з°ёзѕ¶з°·з™Ўи—© з°їз°ѕз™џз™Ўз№№з™Ўз™Ў з№’ ",GetLastError()); }
                
               }
