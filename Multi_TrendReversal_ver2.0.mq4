@@ -20,6 +20,7 @@ extern int Percent=30;
 extern int CriticalCoef=5;
 extern bool DinamicLot=true;
 extern double MM=35000;
+extern int Lok=3;
 extern string Параметры2="Уровни открытия хеджирующих ордеров Buy/Sell";
 extern double Level1=100;
 extern double Level2=150;
@@ -90,8 +91,8 @@ double ReBuyLots;
 double ReSellLots;
 double BuyLots;
 double SellLots;
-double CloseLokB;
-double CloseLokS;
+bool ReCloseLokB;
+bool ReCloseLokS;
 double BuyOrdersProfit;
 double SellOrdersProfit;
 int NumSLimOrders;
@@ -134,27 +135,30 @@ int start()
       Sleep(6000);return(0);
      }
  
-   ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;CloseLokB=false;CloseLokS=false;
+   ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;ReCloseLokB=false;ReCloseLokS=false;
    for(int in=0;in<OrdersTotal();in++)
      {      if(OrderSelect(in,SELECT_BY_POS)==true)
         {
          if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number) )
            {
-            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="15")||(OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")){CloseLokB=true;}}
-            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="25")||(OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")){CloseLokS=true;}}
+            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((OrderComment()=="15")||(OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")||(OrderComment()=="19")||(OrderComment()=="110")||(OrderComment()=="111")||(OrderComment()=="112")||(OrderComment()=="113")||(OrderComment()=="114")||(OrderComment()=="115")){ReCloseLokB=true;}}
+            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((OrderComment()=="25")||(OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")||(OrderComment()=="29")||(OrderComment()=="210")||(OrderComment()=="211")||(OrderComment()=="212")||(OrderComment()=="213")||(OrderComment()=="214")||(OrderComment()=="215")){ReCloseLokS=true;}}
            }
         }
      }
 
-  
+if((Lok<CountBuy)&&(ReCountBuy==0)){SellSTOPDel();}   
 
-if((ReCountBuy!=0)&&(CloseLokS==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
+if((Lok<CountSell)&&(ReCountSell==0)){BuySTOPDel();}   
 
-if((ReCountSell!=0)&&(CloseLokB==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
+
+//if((ReCountBuy!=0)&&(CloseLokS==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
+
+//if((ReCountSell!=0)&&(CloseLokB==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
  
  SellOrdersProfit=0; BuyOrdersProfit=0; FirstBuyOrderProfit=0; FirstSellOrderProfit=0;
- if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
-if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
+ //if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
+//if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
  
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    for(int i=0;i<total;i++)
@@ -204,15 +208,15 @@ if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();Or
 
 //#Открытие первого ордера buy
    if((CountBuy==0) && (BuyTrade==true))
-     {
-     
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Расчёт начального ордера");GoGoBuy=AccountEquity()/MM;}
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==false)){GoGoBuy=1;}
-if (TotalSlt!=0){Print("Расчет начального ордера BuyStop от общего числа открытых ордеров Sell"); GoGoBuy=TotalSlt*Percent/100/Lot1;if ((AccountEquity()/MM)>(TotalSlt*Percent/100/Lot1)){GoGoBuy=(AccountEquity()/MM);}   }
-if ((GoGoBuy<1)&&(DinamicLot==true)) {Print("Условия ММ не выполняются!!! Маленький депозит!!!");GoGoBuy=1;}if (GoGoBuy>CriticalCoef){Print("Начальный лот ограничен значением переменной CriticalCoef");GoGoBuy=CriticalCoef;}
+     {if(CountSell==0){ GoGoBuy=1;}
+if (CountSell>Lok){
+if (TotalSlt!=0){ GoGoBuy=TotalSlt*Percent/100/Lot1; if ((DinamicLot==true)&&(GoGoBuy<(AccountEquity()/MM))) {GoGoBuy=AccountEquity()/MM;} }
+                  }
+if (GoGoBuy<1) {GoGoBuy=1;}if (GoGoBuy>CriticalCoef){GoGoBuy=CriticalCoef;}
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Рассчёт начального ордера");GoGoBuy=AccountEquity()/MM;}
 Sleep(2000);
       Print("Размещение первого ордера на покупку ");
-      if (CloseLokS==true){TP1=TP;}
+      if (ReCloseLokS==true){TP1=TP;}
       else {TP1=NULL;}
       if(IsTradeAllowed()) 
         {
@@ -224,13 +228,15 @@ Sleep(2000);
 //#Открытие первого ордера sell
    if((CountSell==0) && (SellTrade==true))
      {
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Расчёт начального ордера");GoGoSell=AccountEquity()/MM;}
-if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==false)){GoGoSell=1;} 
-if (TotalBLt!=0){Print("Расчет начального ордера Sell от общего числа открытых ордеров Buy"); GoGoSell=TotalBLt*Percent/100/Lot1;if ((AccountEquity()/MM)>(TotalBLt*Percent/100/Lot1)){GoGoSell=(AccountEquity()/MM);}}
-if ((GoGoSell<1)&&(DinamicLot==true)) {Print("Условия ММ не выполняются!! Маленький депозит!!");GoGoSell=1;} if (GoGoSell>CriticalCoef){Print("Начальный лот ограничен значением переменной CriticalCoef");GoGoSell=CriticalCoef;}
+   if(CountBuy==0){ GoGoSell=1;}
+if (CountBuy>Lok){
+if (TotalBLt!=0){GoGoSell=TotalBLt*Percent/100/Lot1; if ((DinamicLot==true)&&(GoGoSell<(AccountEquity()/MM))) {GoGoSell=AccountEquity()/MM;}}
+                 }
+if (GoGoSell<1) {GoGoSell=1;} if (GoGoSell>CriticalCoef){GoGoSell=CriticalCoef;}
+if ((CountBuy==0)&&(CountSell==0)&&(DinamicLot==true)){Print("Рассчёт начального ордера");GoGoSell=AccountEquity()/MM;}
 Print ("Открытие 1-го ордера");
 Sleep(2000);
-    if (CloseLokB==true){TP1=TP;}
+    if (ReCloseLokB==true){TP1=TP;}
       else {TP1=NULL;}
       Print("Размещение первого ордера на продажу");
       if(IsTradeAllowed()) 
@@ -1214,7 +1220,7 @@ double SearchLastLimSellPrice()
   {
   Ticket=0;
   FirstSellPrice=0;
-    for(int SS=OrdersTotal();SS>0;SS++)
+    for(int SS=OrdersTotal();SS>0;SS--)
      {
       if(OrderSelect(SS,SELECT_BY_POS)==true)
         {
@@ -1229,6 +1235,28 @@ double SearchLastLimSellPrice()
       OrderClose(Ticket,OrderLots(),Bid,3*k,Black);
       return(0);
   } 
+  
+  double BuySTOPDel()
+{for (int iDel1=OrdersTotal()-1; iDel1>=0; iDel1--)
+   {
+      if (!OrderSelect(iDel1,SELECT_BY_POS,MODE_TRADES)) break;
+            if ((OrderType()==OP_BUYSTOP)&&(OrderMagicNumber() == Magic_Number ))    if (IsTradeAllowed()) { if (OrderDelete(OrderTicket())<0) 
+            { 
+        Alert("Ошибка удаления ордера № ", GetLastError()); 
+      }  
+            }
+} return(0);}
+
+double SellSTOPDel()
+{for (int iDel2=OrdersTotal()-1; iDel2>=0; iDel2--)
+   {
+      if (!OrderSelect(iDel2,SELECT_BY_POS,MODE_TRADES)) break;
+            if ((OrderType()==OP_SELLSTOP)&&(OrderMagicNumber() == Magic_Number ))    if (IsTradeAllowed()) { if (OrderDelete(OrderTicket())<0) 
+            { 
+        Alert("Ошибка удаления ордера № ", GetLastError()); 
+      }  
+            }
+} return(0);}
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
