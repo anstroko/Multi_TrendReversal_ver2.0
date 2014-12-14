@@ -91,6 +91,8 @@ double ReBuyLots;
 double ReSellLots;
 double BuyLots;
 double SellLots;
+bool CloseLokB;
+bool CloseLokS;
 bool ReCloseLokB;
 bool ReCloseLokS;
 double BuyOrdersProfit;
@@ -134,7 +136,18 @@ int start()
       Alert("Неверный счет!");
       Sleep(6000);return(0);
      }
- 
+ ObjectCreate("label_object1",OBJ_LABEL,0,0,0);
+ObjectSet("label_object1",OBJPROP_CORNER,4);
+ObjectSet("label_object1",OBJPROP_XDISTANCE,10);
+ObjectSet("label_object1",OBJPROP_YDISTANCE,10);
+ObjectSetText("label_object1","Количество ордеров Buy="+CountBuy+"; Торгуемый лот="+DoubleToStr(TotalBLt,2));
+
+
+ObjectCreate("label_object2",OBJ_LABEL,0,0,0);
+ObjectSet("label_object2",OBJPROP_CORNER,4);
+ObjectSet("label_object2",OBJPROP_XDISTANCE,10);
+ObjectSet("label_object2",OBJPROP_YDISTANCE,30);
+ObjectSetText("label_object2","Количество ордеров Sell="+CountSell+"; Торгуемый лот="+DoubleToStr(TotalSlt,2));
    ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;ReCloseLokB=false;ReCloseLokS=false;
    for(int in=0;in<OrdersTotal();in++)
      {      if(OrderSelect(in,SELECT_BY_POS)==true)
@@ -151,16 +164,21 @@ if((Lok<CountBuy)&&(ReCountBuy==0)){SellSTOPDel();}
 
 if((Lok<CountSell)&&(ReCountSell==0)){BuySTOPDel();}   
 
+if((ReCloseLokB==true)&&(ReCountSell==1)){ DeleteSellTakeProfit();       }
+if((ReCloseLokS==true)&&(ReCountBuy==1)){ DeleteBuyTakeProfit();       }
 
-//if((ReCountBuy!=0)&&(CloseLokS==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
+if((ReCountBuy!=0)&&(CloseLokS==false)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
 
-//if((ReCountSell!=0)&&(CloseLokB==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
+if((ReCountSell!=0)&&(CloseLokB==false)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
+
+if((ReCloseLokB==true)&& (ReBuyLots!=BuyLots)){Print("Изменение профита buy");CalculateTotalBuyTP();}
+if((ReCloseLokS==true)&& (ReSellLots!=SellLots)){Print("Изменение профита sell");CalculateTotalSellTP();}
  
  SellOrdersProfit=0; BuyOrdersProfit=0; FirstBuyOrderProfit=0; FirstSellOrderProfit=0;
- //if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
-//if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
+if (CloseLokB==true) {SearchFirstBuyOrderProfit(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit(); if((SellOrdersProfit+FirstBuyOrderProfit)>0){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
+if (CloseLokS==true) {SearchFirstSellOrderProfit();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if((BuyOrdersProfit+FirstSellOrderProfit)>0){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
  
-   CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
+   CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;CloseLokB=false;CloseLokS=false;
    for(int i=0;i<total;i++)
      {
      
@@ -168,8 +186,8 @@ if((Lok<CountSell)&&(ReCountSell==0)){BuySTOPDel();}
         {
          if(OrderSymbol()==Symbol()) 
            {
-            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();}
-            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();}
+            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();if((OrderComment()=="15")||(OrderComment()=="16")||(OrderComment()=="17")||(OrderComment()=="18")||(OrderComment()=="19")||(OrderComment()=="110")||(OrderComment()=="111")||(OrderComment()=="112")||(OrderComment()=="113")||(OrderComment()=="114")||(OrderComment()=="115")){CloseLokB=true;}}
+            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();if((OrderComment()=="25")||(OrderComment()=="26")||(OrderComment()=="27")||(OrderComment()=="28")||(OrderComment()=="29")||(OrderComment()=="210")||(OrderComment()=="211")||(OrderComment()=="212")||(OrderComment()=="213")||(OrderComment()=="214")||(OrderComment()=="215")){CloseLokS=true;}}
             if((OrderType()==OP_SELL) || (OrderType()==OP_BUY)){OrderSwaps=OrderSwaps+OrderSwap();}
            }
         }
@@ -1257,6 +1275,43 @@ double SellSTOPDel()
       }  
             }
 } return(0);}
+
+
+    double DeleteBuyTakeProfit() {
+
+   for(int ibb=0;ibb<OrdersTotal();ibb++)
+     {
+      if(OrderSelect(ibb,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (OrderTakeProfit()!=NULL)&& (Magic_Number==OrderMagicNumber()))
+           {
+          Print("Удаляем профит первого ордера");   OrderModify(OrderTicket(),OrderOpenPrice(),NULL,NULL,0,Orange); 
+           }
+        }
+     }
+   
+   return(0);
+  }
+
+    double DeleteSellTakeProfit() {
+
+   for(int iss=0;iss<OrdersTotal();iss++)
+     {
+      if(OrderSelect(iss,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&& (OrderTakeProfit()!=NULL)&& (Magic_Number==OrderMagicNumber()))
+           {
+            Print("Удаляем профит первого ордера");   OrderModify(OrderTicket(),OrderOpenPrice(),NULL,NULL,0,Orange); 
+           }
+        }
+     }
+   
+   return(0);
+  }
+
+
+
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
