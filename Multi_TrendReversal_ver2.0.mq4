@@ -51,6 +51,9 @@ extern double Lot10=3;
 
 double TP1;
 int k;
+double Lot;
+double LastBuyLot;
+double LastSellLot;
 double GoGoBuy=1;
 double GoGoSell=1;
 bool StartBuyOrders;
@@ -245,7 +248,7 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
               {
                if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) 
                  {
-                  LastBuyPrice=OrderOpenPrice();
+                  LastBuyPrice=OrderOpenPrice(); Lot=OrderLots()*1.6;
                  }
               }
            }
@@ -255,7 +258,7 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
             Print("Открываем 2-й ордер Buy");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot2,Ask,3*k,NULL,NULL,"12",Magic_Number,0,Blue)<0)
+               if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"12",Magic_Number,0,Blue)<0)
                  {Alert("Возникла ошибка № ",GetLastError()); }
                
               }
@@ -272,7 +275,7 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
             if(OrderSelect(isell,SELECT_BY_POS)==true)
               {
                if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL))
-                 {LastSellPrice=OrderOpenPrice();}
+                 {LastSellPrice=OrderOpenPrice();Lot=OrderLots()*1.6;}
               }
            }
          if(Bid>(LastSellPrice+Level1*k*Point))
@@ -281,7 +284,7 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
             Print("Открываем 2-й ордер Sell");
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot2,Bid,3*k,NULL,NULL,"22",Magic_Number,0,Red)<0)
+               if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"22",Magic_Number,0,Red)<0)
                  {Alert("Возникла ошибка № ",GetLastError()); }
              
               }
@@ -298,9 +301,10 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
            {
         
             Print("Открываем 3-й ордер Buy");
+             SearchLastBuyLot();Lot=LastBuyLot*1.6;
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_BUY,GoGoBuy*Lot3,Ask,3*k,NULL,NULL,"13",Magic_Number,0,Blue)<0)
+               if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"13",Magic_Number,0,Blue)<0)
                  {Alert("Возникла ошибка № ",GetLastError()); }
                
               }
@@ -317,9 +321,10 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
            {
          
             Print("Открываем 3-й ордер Sell");
+            SearchLastSellLot();Lot=LastSellLot*1.6;
             if(IsTradeAllowed()) 
               {
-               if(OrderSend(Symbol(),OP_SELL,GoGoSell*Lot3,Bid,3*k,NULL,NULL,"23",Magic_Number,0,Red)<0)
+               if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"23",Magic_Number,0,Red)<0)
                  {Alert("Возникла ошибка № ",GetLastError()); }
               
               }
@@ -779,7 +784,7 @@ double CalculateTotalSellTPToZero()
    return(TPS);
   } 
   
-//#пїЅз°ѕз™Ўз°Ѕз¤™ з°їз°ѕз°Ѕз¦±з–‡з“Јз©©з–‡з“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ѕз¤™з±Ђз°їз¤™з±Ђ
+
 double SearchLastBuyPrice()
   {
    LastBuyPrice=0;
@@ -797,13 +802,34 @@ double SearchLastBuyPrice()
      }
    return(LastBuyPrice);
   }
-//#пїЅз°ѕз™Ўз°Ѕз¤™ з°їз°ѕз°Ѕз¦±з–‡з“Јз©©з–‡з“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ёз°ѕз“ЈпїЅз–†з±Ђ
+  
+  double SearchLastBuyLot()
+  {
+   LastBuyPrice=0;
+   for(int ibuySearch=0;ibuySearch<OrdersTotal();ibuySearch++)
+     {
+      // з°ёз–‡з™џз±Ђз¦±зѕ№з°·пїЅз°· з’Ѕзѕ¶зЌєз°ѕз°ёпїЅ з°їз°ёз°ѕз’Ѕз–‡з°ёз¤™з™Ў, з°·пїЅз¤™ з¤™пїЅз¤™ з°ѕз°ёз“Јз–‡з°ё з©«з°ѕз–†з–‡з°· зЌєзѕ¶з°·зѕ№ з™џпїЅз¤™з°ёзѕ¶з°· з™Ўз¦±з™Ў з±Ђз“ЈпїЅз¦±з–‡з©© з’Ѕ зѕёз°·з°ѕ з’Ѕз°ёз–‡з©«и—©!
+      if(OrderSelect(ibuySearch,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY))
+           {
+            if(LastBuyPrice==0){LastBuyPrice=OrderOpenPrice();LastBuyLot=OrderLots();}
+            if(LastBuyPrice>OrderOpenPrice()){LastBuyPrice=OrderOpenPrice();LastBuyLot=OrderLots();}
+           }
+        }
+     }
+   return(LastBuyLot);
+  }
+  
+  
+  
+  
+
 double SearchLastSellPrice()
   {
    LastSellPrice=0;
    for(int isellSearch=0;isellSearch<OrdersTotal();isellSearch++)
      {
-      // з°ёз–‡з™џз±Ђз¦±зѕ№з°·пїЅз°· з’Ѕзѕ¶зЌєз°ѕз°ёпїЅ з°їз°ёз°ѕз’Ѕз–‡з°ёз¤™з™Ў, з°·пїЅз¤™ з¤™пїЅз¤™ з°ѕз°ёз“Јз–‡з°ё з©«з°ѕз–†з–‡з°· зЌєзѕ¶з°·зѕ№ з™џпїЅз¤™з°ёзѕ¶з°· з™Ўз¦±з™Ў з±Ђз“ЈпїЅз¦±з–‡з©© з’Ѕ зѕёз°·з°ѕ з’Ѕз°ёз–‡з©«и—©!
       if(OrderSelect(isellSearch,SELECT_BY_POS)==true)
         {
          if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL))
@@ -815,7 +841,25 @@ double SearchLastSellPrice()
      }
    return(LastSellPrice);
   }
-//#пїЅз°ѕз™Ўз°Ѕз¤™ з°їз°ѕз°Ѕз¦±з–‡з“Јз©©з–‡з“Љз°ѕ з¦±з™Ўз©«з™Ўз°·з©©з°ѕз“Љз°ѕ з°ѕз°ёз“Јз–‡з°ёпїЅ з©©пїЅ з°їз°ѕз¤™з±Ђз°їз¤™з±Ђ
+
+double SearchLastSellLot()
+  {
+   LastSellPrice=0;
+   for(int isellSearch=0;isellSearch<OrdersTotal();isellSearch++)
+     {
+      if(OrderSelect(isellSearch,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_SELL))
+           {
+            if(LastSellPrice==0){LastSellPrice=OrderOpenPrice();LastSellLot=OrderLots();}
+            if(LastSellPrice<OrderOpenPrice()){LastSellPrice=OrderOpenPrice();LastSellLot=OrderLots();}
+           }
+        }
+     }
+   return(LastSellLot);
+  }
+
+
 double SearchLastLimBuyPrice()
   {
    LastBuyPrice=0;
@@ -973,7 +1017,7 @@ double SearchSecondSellOrder() {
            }
         }
         }
-        CalculateTotalBuyTPToZero();
+        CalculateTotalBuyTP();
       return(0);
   } 
  double CloseFirstSecondBuySellOrders()
@@ -995,7 +1039,7 @@ double SearchSecondSellOrder() {
            }
         }
         }
-        CalculateTotalBuyTPToZero();
+        CalculateTotalBuyTP();
       return(0);
   } 
 
@@ -1015,7 +1059,7 @@ double SearchSecondSellOrder() {
         }
         }
 
-      CalculateTotalSellTPToZero();
+      CalculateTotalSellTP();
       return(0);
   } 
   
@@ -1038,7 +1082,7 @@ double SearchSecondSellOrder() {
         }
         }
 
-      CalculateTotalSellTPToZero();
+      CalculateTotalSellTP();
       return(0);
   } 
   
