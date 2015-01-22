@@ -131,27 +131,27 @@ int start()
 ObjectSet("label_object1",OBJPROP_CORNER,4);
 ObjectSet("label_object1",OBJPROP_XDISTANCE,10);
 ObjectSet("label_object1",OBJPROP_YDISTANCE,10);
-ObjectSetText("label_object1","Количество ордеров Buy="+CountBuy+"; Торгуемый лот="+DoubleToStr(TotalBLt,2)+"; SellGoToZero="+SellGoToZero,12,"Arial",Red);
+ObjectSetText("label_object1","Количество ордеров Buy="+CountBuy+";Торгуемый лот="+DoubleToStr(TotalBLt,2)+";Обнуляем Sell="+SellGoToZero,12,"Arial",Red);
 
 
 ObjectCreate("label_object2",OBJ_LABEL,0,0,0);
 ObjectSet("label_object2",OBJPROP_CORNER,4);
 ObjectSet("label_object2",OBJPROP_XDISTANCE,10);
 ObjectSet("label_object2",OBJPROP_YDISTANCE,30);
-ObjectSetText("label_object2","Количество ордеров Sell="+CountSell+"; Торгуемый лот="+DoubleToStr(TotalSlt,2)+"; BuyGoToZero="+BuyGoToZero,12,"Arial",Red);
+ObjectSetText("label_object2","Количество ордеров Sell="+CountSell+";Торгуемый лот="+DoubleToStr(TotalSlt,2)+";Обнуляем Buy="+BuyGoToZero,12,"Arial",Red);
    
 ObjectCreate("label_object3",OBJ_LABEL,0,0,0);
 ObjectSet("label_object3",OBJPROP_CORNER,4);
 ObjectSet("label_object3",OBJPROP_XDISTANCE,10);
 ObjectSet("label_object3",OBJPROP_YDISTANCE,50);
-ObjectSetText("label_object3","SecondBuySeries="+SecondBuySeries+"; ThirdBuySeries="+ThirdBuySeries,12,"Arial",Red);
+ObjectSetText("label_object3","Вторая серия Buy="+SecondBuySeries+"; Третья серия Buy="+ThirdBuySeries,12,"Arial",Red);
       
    
 ObjectCreate("label_object4",OBJ_LABEL,0,0,0);
 ObjectSet("label_object4",OBJPROP_CORNER,4);
 ObjectSet("label_object4",OBJPROP_XDISTANCE,10);
 ObjectSet("label_object4",OBJPROP_YDISTANCE,70);
-ObjectSetText("label_object4","SecondSellSeries="+SecondSellSeries+"; ThirdSellSeries="+ThirdSellSeries,12,"Arial",Red);
+ObjectSetText("label_object4","Вторая серия Sell="+SecondSellSeries+"; Третья серия Sell="+ThirdSellSeries,12,"Arial",Red);
          
    
    
@@ -224,8 +224,8 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
         {
          if(OrderSymbol()==Symbol()) 
            {
-            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();if(CountBuy>=OrdersToZero){CloseLokB=true;}}
-            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();if(CountSell>=OrdersToZero){CloseLokS=true;}}
+            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();if(CountBuy+bb>=OrdersToZero){CloseLokB=true;}}
+            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();if(CountSell+ss>=OrdersToZero){CloseLokS=true;}}
             if((OrderType()==OP_SELL) || (OrderType()==OP_BUY)){OrderSwaps=OrderSwaps+OrderSwap();}
            }
         }
@@ -646,7 +646,7 @@ if (ReCountBuy>3){SearchFirstSellOrder();SearchSecondSellOrder();SearchLokBuyOrd
       }
          }  
 //#Открытие первого ордера buy
-   if((CountBuy==0) && (BuyTrade==true)&&((((Open[1]-Close[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(SellGoToZero==true)))
+   if((CountBuy==0) && (BuyTrade==true)&&((((Open[1]-Close[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(SellGoToZero==true)||(CountSell==Lok)))
      {   NoDeleteBuyProfit=false;
      if(SellGoToZero==true){
                SearchFirstSellOrder();    
@@ -667,7 +667,7 @@ if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUYSTOP,Lot1*GoGoBuy,High[1
 
      }
 //#Открытие первого ордера sell
-   if((CountSell==0) && (SellTrade==true)&&((((Close[1]-Open[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(BuyGoToZero==true)))
+   if((CountSell==0) && (SellTrade==true)&&((((Close[1]-Open[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(BuyGoToZero==true)||(CountBuy==Lok)))
      {   NoDeleteSellProfit=false;
       if(BuyGoToZero==true){
                SearchFirstBuyOrder(); NoDeleteSellProfit=false;   
