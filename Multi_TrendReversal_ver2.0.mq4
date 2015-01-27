@@ -22,6 +22,7 @@ extern int TP=10;
 extern double BonusDollar=1;
 extern int Magic_Number=3213;
 extern double Percent=30;
+extern double CoeffNull=7;
 extern int Lok=3;
 extern double Buy1=3;
 extern double Buy2=4;
@@ -226,24 +227,35 @@ if (BuyGoToZero==true){
 
 if(ZeroS1==true){
 if ((ReCountSell>(1+DeGreeSell))) {SearchFirstBuyOrder(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit();if(FirstBuyOrderProfit!=0){
-    if((SellOrdersProfit+FirstBuyOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}}
-}
+  if(OrderLots()*CoeffNull<ReSellLots){  if((SellOrdersProfit+FirstBuyOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
+  else {if((SellOrdersProfit+FirstBuyOrderProfit/2)>BonusDollar*100){Print("Закрываем половину первого ордера на покупку и ордера на продажу");CloseMidFirstBuySellOrders();}}}
+  }}
+  
+
 if(ZeroS2==true){
 if (ReCountSell>(2+DeGreeSell)) {SearchFirstBuyOrder(); SearchLokSellOrdersProfit(); OrderSelect(Ticket, SELECT_BY_TICKET);FirstBuyOrderProfit=OrderProfit();if(FirstBuyOrderProfit!=0){
-    if((SellOrdersProfit+FirstBuyOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}}
+  if(OrderLots()*CoeffNull<ReSellLots){  if((SellOrdersProfit+FirstBuyOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на покупку и ордера на продажу");CloseFirstBuySellOrders();}}
+  else {if((SellOrdersProfit+FirstBuyOrderProfit/2)>BonusDollar*100){Print("Закрываем половину первого ордера на покупку и ордера на продажу");CloseMidFirstBuySellOrders();}}
+  
+  }}
 
 }}
+
                       
 SellOrdersProfit=0; BuyOrdersProfit=0; FirstBuyOrderProfit=0; FirstSellOrderProfit=0;SecondBuyOrderProfit=0; SecondSellOrderProfit=0;                      
 if (SellGoToZero==true){
 
 if(ZeroB1==true){
 if ((ReCountBuy>(1+DeGreeBuy))) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if(FirstSellOrderProfit!=0){
-  if((BuyOrdersProfit+FirstSellOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}}
+  if(OrderLots()*CoeffNull<ReBuyLots){ if((BuyOrdersProfit+FirstSellOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
+  else{if((BuyOrdersProfit+FirstSellOrderProfit/2)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseMidFirstSellBuyOrders();}}
+  }}
 }
 if(ZeroB2==true){
 if ((ReCountBuy>(2+DeGreeBuy))) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect(Ticket, SELECT_BY_TICKET);FirstSellOrderProfit=OrderProfit();if(FirstSellOrderProfit!=0){
-  if((BuyOrdersProfit+FirstSellOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}}
+  if(OrderLots()*CoeffNull<ReBuyLots){if((BuyOrdersProfit+FirstSellOrderProfit)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseFirstSellBuyOrders();}}
+  else{if((BuyOrdersProfit+FirstSellOrderProfit/2)>BonusDollar*100){Print("Закрываем первый ордер на продажу и ордера на покупку");CloseMidFirstSellBuyOrders();}}
+  }}
 }
 
 
@@ -1107,6 +1119,26 @@ double SearchSecondSellOrder() {
         CalculateTotalBuyTP();
       return(0);
   } 
+  
+   double CloseMidFirstBuySellOrders()
+  {
+   SearchFirstBuyOrder();
+         OrderSelect(Ticket, SELECT_BY_TICKET); double j=OrderLots()/2;  OrderClose(Ticket,j,Bid,3*k,Black);
+       
+     for(int S=OrdersTotal();S>0;S--)
+     {
+    if(OrderSelect(S,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (Magic_Number==OrderMagicNumber())&&(OrderType()==OP_SELL))
+           {
+           OrderClose(OrderTicket(),OrderLots(),Ask,3*k,Black);
+             
+           }
+        }
+        }
+        CalculateTotalBuyTP();
+      return(0);
+  } 
  double CloseFirstSecondBuySellOrders()
   {
          SearchFirstBuyOrder();
@@ -1149,7 +1181,25 @@ double SearchSecondSellOrder() {
       CalculateTotalSellTP();
       return(0);
   } 
-  
+     double CloseMidFirstSellBuyOrders()
+  {
+        SearchFirstSellOrder();
+      OrderSelect(Ticket, SELECT_BY_TICKET); double t=OrderLots()/2;
+      OrderClose(Ticket,t,Ask,3*k,Black);
+    for(int SS=OrdersTotal();SS>0;SS--)
+     {
+      if(OrderSelect(SS,SELECT_BY_POS)==true)
+        {
+         if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&& (Magic_Number==OrderMagicNumber()))
+           {
+        OrderClose(OrderTicket(),OrderLots(),Bid,3*k,Black);
+           }
+        }
+        }
+
+      CalculateTotalSellTP();
+      return(0);
+  } 
    double CloseFirstSecondSellBuyOrders()
   {
         SearchFirstSellOrder();
