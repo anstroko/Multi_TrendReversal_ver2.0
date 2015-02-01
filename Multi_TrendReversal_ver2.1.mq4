@@ -25,6 +25,7 @@ extern double Percent=25;
 extern double CoeffNull=7;
 extern int Lok=3;
 extern double CriticalLotsInTrade=5;
+extern double CriticalLots=5;
 //extern bool DinamicLot=true;
 //extern double MM=35000;
 extern string Параметры2="Уровни открытия хеджирующих ордеров Buy/Sell";
@@ -174,8 +175,8 @@ ObjectSetText("label_object4","Вторая серия Sell="+SecondSellSeries+"; Третья се
         {
          if((OrderSymbol()==Symbol())&&(OrderMagicNumber()==Magic_Number) )
            {
-            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if((ReCountBuy)>=OrdersToZero){BuyGoToZero=true;}}
-            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if((ReCountSell)>=OrdersToZero){SellGoToZero=true;}}
+            if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); if(((ReCountBuy)>=OrdersToZero)||(ReBuyLots>CriticalLots)){BuyGoToZero=true;}}
+            if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();if(((ReCountSell)>=OrdersToZero)||(ReSellLots>CriticalLots)){SellGoToZero=true;}}
            }
         }
      }
@@ -237,8 +238,8 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
         {
          if(OrderSymbol()==Symbol()) 
            {
-            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();if(CountBuy+bb>=OrdersToZero){CloseLokB=true;}}
-            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();if(CountSell+ss>=OrdersToZero){CloseLokS=true;}}
+            if(OrderType()==OP_BUY){CountBuy=CountBuy+1;TotalBLt=TotalBLt+OrderLots();BuyLots=BuyLots+OrderLots();if((CountBuy>=OrdersToZero)||(BuyLots>CriticalLots)){CloseLokB=true;}}
+            if(OrderType()==OP_SELL){CountSell=CountSell+1;TotalSlt=TotalSlt+OrderLots();SellLots=SellLots+OrderLots();if((CountSell>=OrdersToZero)||(SellLots>CriticalLots)){CloseLokS=true;}}
             if((OrderType()==OP_SELL) || (OrderType()==OP_BUY)){OrderSwaps=OrderSwaps+OrderSwap();}
            }
         }
