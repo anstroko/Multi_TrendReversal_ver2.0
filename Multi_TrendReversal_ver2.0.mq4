@@ -19,6 +19,7 @@ extern int BodySize=0;
 extern int CandleSize=0;
 extern int OrdersToZero=5;
 extern int TP=10;
+extern int TP2=1;
 extern double BonusDollar=1;
 extern int Magic_Number=3213;
 extern double Percent=25;
@@ -722,7 +723,8 @@ TPB=0;
      }
    if(CountB>0)
      {
-      TPB=PriceB/BuyLots+TP*Point*k;
+     
+      if (CountB<OrdersToZero){TPB=PriceB/BuyLots+TP*Point*k;} else {TPB=PriceB/BuyLots+TP2*Point*k;}
       for(int ibuy3Result=0;ibuy3Result<OrdersTotal();ibuy3Result++)
         { 
          if(OrderSelect(ibuy3Result,SELECT_BY_POS)==true)
@@ -790,7 +792,7 @@ TPB=0;
      }
    if(CountS>0)
      {
-      TPS=PriceS/SellLots-TP*Point*k;
+     if (CountS<OrdersToZero){ TPS=PriceS/SellLots-TP*Point*k; } else { TPS=PriceS/SellLots-TP2*Point*k; }
       for(int isell4Result=0;isell4Result<OrdersTotal();isell4Result++)
         { 
          if(OrderSelect(isell4Result,SELECT_BY_POS)==true)
@@ -1073,7 +1075,7 @@ double SearchSecondSellOrder() {
            }
         }
         }
-        CalculateTotalBuyTP();
+        CalculateTotalBuyTPToZero();
       return(0);
   } 
   
@@ -1093,7 +1095,7 @@ double SearchSecondSellOrder() {
            }
         }
         }
-        CalculateTotalBuyTP();
+        CalculateTotalBuyTPToZero();
       return(0);
   } 
  double CloseFirstSecondBuySellOrders()
@@ -1115,7 +1117,7 @@ double SearchSecondSellOrder() {
            }
         }
         }
-        CalculateTotalBuyTP();
+        CalculateTotalBuyTPToZero();
       return(0);
   } 
 
@@ -1135,7 +1137,7 @@ double SearchSecondSellOrder() {
         }
         }
 
-      CalculateTotalSellTP();
+      CalculateTotalSellTPToZero();
       return(0);
   } 
      double CloseMidFirstSellBuyOrders()
@@ -1154,7 +1156,7 @@ double SearchSecondSellOrder() {
         }
         }
 
-      CalculateTotalSellTP();
+      CalculateTotalSellTPToZero();
       return(0);
   } 
    double CloseFirstSecondSellBuyOrders()
@@ -1176,7 +1178,7 @@ double SearchSecondSellOrder() {
         }
         }
 
-      CalculateTotalSellTP();
+      CalculateTotalSellTPToZero();
       return(0);
   } 
   
