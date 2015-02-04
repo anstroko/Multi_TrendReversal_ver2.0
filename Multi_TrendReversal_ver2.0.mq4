@@ -24,6 +24,7 @@ extern int Magic_Number=3213;
 extern double Percent=25;
 extern double CoeffNull=7;
 extern int Lok=3;
+extern int SleepingTime=3;
 extern double CriticalLotsInTrade=5;
 //extern bool DinamicLot=true;
 //extern double MM=35000;
@@ -644,6 +645,8 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            }
         }
  if(!isNewBar())return(0);
+ Sleep(SleepingTime*100);
+ 
   for (int i=OrdersTotal()-1; i>=0; i--)
    {
       if (!OrderSelect(i,SELECT_BY_POS,MODE_TRADES)) break;
