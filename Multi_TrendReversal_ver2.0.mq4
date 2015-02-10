@@ -26,7 +26,8 @@ extern double Percent=25;
 extern double CoeffNull=7;
 extern int Lok=3;
 extern int SleepingTime=3;
-extern int CriticalLot=10;
+extern double CriticalLot=0.5;
+extern int Index=1;
 //extern bool DinamicLot=true;
 //extern double MM=35000;
 extern string Параметры2="Уровни открытия хеджирующих ордеров Buy/Sell";
@@ -182,8 +183,8 @@ ObjectSetText("label_object4","Вторая серия Sell="+SecondSellSeries+"; Третья се
            }
         }
      }
- if((ReCountBuy+1)<OrdersToZero){BuyGoToZero=false;}
- if((ReCountSell+1)<OrdersToZero){SellGoToZero=false;}
+ if((ReCountBuy+Index)<OrdersToZero){BuyGoToZero=false;}
+ if((ReCountSell+Index)<OrdersToZero){SellGoToZero=false;}
  if(BuyGoToZero==false){if(ReCountBuy>=OrdersToZero){BuyGoToZero=true;}}
  if(SellGoToZero==false){if(ReCountSell>=OrdersToZero){SellGoToZero=true;}}
  
@@ -256,8 +257,8 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            }
         }
      }
- if((CountBuy+1)<OrdersToZero){CloseLokB=false;}
- if((CountSell+1)<OrdersToZero){CloseLokS=false;}
+ if((CountBuy+Index)<OrdersToZero){CloseLokB=false;}
+ if((CountSell+Index)<OrdersToZero){CloseLokS=false;}
  if(CloseLokB==false){if(CountBuy>=OrdersToZero){CloseLokB=true;}}
  if(CloseLokS==false){if(CountSell>=OrdersToZero){CloseLokS=true;}}
  
@@ -684,7 +685,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
       GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
       SearchFirstSellOrder();
            OrderSelect(Ticket, SELECT_BY_TICKET);
-                 if (GoGoBuy>CriticalLot){GoGoBuy=CriticalLot;NoDeleteBuyProfit=true;}
+                 if ((OrderLots()>CriticalLot)){GoGoBuy=OrderLots()/Lot1;}
               }    
                
      if(SellGoToZero==false){NoDeleteBuyProfit=true;}
@@ -706,8 +707,11 @@ if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUYSTOP,Lot1*GoGoBuy,High[1
      {
      
         NoDeleteSellProfit=false;GoGoSell=1;ZeroS1=false;ZeroS2=false;
-     if(BuyGoToZero==true){  GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2); }    
-                     if (GoGoSell>CriticalLot){GoGoSell=CriticalLot;NoDeleteBuyProfit=true;}
+     if(BuyGoToZero==true){  GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2); } 
+           SearchFirstBuyOrder();
+           OrderSelect(Ticket, SELECT_BY_TICKET);   
+           
+                     if ((OrderLots()>CriticalLot)){GoGoSell=OrderLots()/Lot1;}
          if(BuyGoToZero==false){NoDeleteSellProfit=true;}
          
       Print("Размещение первого ордера на продажу");
