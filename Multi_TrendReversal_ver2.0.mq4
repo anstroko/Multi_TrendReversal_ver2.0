@@ -28,6 +28,7 @@ extern int Lok=3;
 extern int SleepingTime=3;
 extern double CriticalLot=0.5;
 extern int Index=1;
+extern double KKLok;
 //extern bool DinamicLot=true;
 //extern double MM=35000;
 extern string Параметры2="Уровни открытия хеджирующих ордеров Buy/Sell";
@@ -43,6 +44,7 @@ extern double Level9=500;
 extern string Параметры3="Объемы ордеров Buy/Sell";
 extern double Lot1=0.1;
 extern double CoefLot=1.6;
+extern double CoefLot2=1.6;
 extern int Spread=3;
 
 int ss;
@@ -206,8 +208,8 @@ if((ReCountSell>0)&&(OnlyToZeroSell==false)&&((BuyGoToZero==false)||(NoDeleteSel
 
 
 //Локирование ордеров 
-if ((BuyGoToZero==true)&&(ReCountSell!=0)&&(CountSell==(ReCountSell-1))){StopSell();}
-if ((SellGoToZero==true)&&(ReCountBuy!=0)&&(CountBuy==(ReCountBuy-1))){StopBuy();}
+//if ((BuyGoToZero==true)&&(ReCountSell!=0)&&(CountSell==(ReCountSell-1))){StopSell();}
+//if ((SellGoToZero==true)&&(ReCountBuy!=0)&&(CountBuy==(ReCountBuy-1))){StopBuy();}
 
 
 
@@ -396,7 +398,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
            
             Print("Открываем 4-й ордер Buy");
-                    SearchLastBuyLot();Lot=NormalizeDouble(LastBuyLot*CoefLot,2);
+                    SearchLastBuyLot();Lot=NormalizeDouble(LastBuyLot*CoefLot2,2);
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"14",Magic_Number,0,Blue)<0)
@@ -416,7 +418,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 4-й ордер Sell");
-            SearchLastSellLot();Lot=NormalizeDouble(LastSellLot*CoefLot,2);
+            SearchLastSellLot();Lot=NormalizeDouble(LastSellLot*CoefLot2,2);
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"24",Magic_Number,0,Red)<0)
@@ -436,7 +438,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 5-й ордер Buy");
-                    SearchLastBuyLot();Lot=NormalizeDouble(LastBuyLot*CoefLot,2);
+                    SearchLastBuyLot();Lot=NormalizeDouble(LastBuyLot*CoefLot2,2);
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"15",Magic_Number,0,Blue)<0)
@@ -456,7 +458,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
          ;
             Print("Открываем 5-й ордер Sell");
-            SearchLastSellLot();Lot=NormalizeDouble(LastSellLot*CoefLot,2);
+            SearchLastSellLot();Lot=NormalizeDouble(LastSellLot*CoefLot2,2);
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"25",Magic_Number,0,Red)<0)
@@ -475,7 +477,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
         
             Print("Открываем 6-й ордер Buy");
-                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot;
+                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"16",Magic_Number,0,Blue)<0)
@@ -495,7 +497,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 6-й ордер Sell");
-            SearchLastSellLot();Lot=LastSellLot*CoefLot;
+            SearchLastSellLot();Lot=LastSellLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"26",Magic_Number,0,Red)<0)
@@ -513,7 +515,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
           
             Print("Открываем 7-й ордер Buy");
-                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot;
+                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"17",Magic_Number,0,Blue)<0)
@@ -533,7 +535,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
            
             Print("Открываем 7-й ордер Sell");
-            SearchLastSellLot();Lot=LastSellLot*CoefLot;
+            SearchLastSellLot();Lot=LastSellLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"27",Magic_Number,0,Red)<0)
@@ -553,7 +555,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
            
             Print("Открываем 8-й ордер Buy");
-                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot;
+                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"18",Magic_Number,0,Blue)<0)
@@ -573,7 +575,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 8-й ордер Sell");
-            SearchLastSellLot();Lot=LastSellLot*CoefLot;
+            SearchLastSellLot();Lot=LastSellLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"28",Magic_Number,0,Red)<0)
@@ -593,7 +595,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
            
             Print("Открываем 9-й ордер Buy");
-                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot;
+                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"19",Magic_Number,0,Blue)<0)
@@ -613,7 +615,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 9-й ордер Sell");
-            SearchLastSellLot();Lot=LastSellLot*CoefLot;
+            SearchLastSellLot();Lot=LastSellLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"29",Magic_Number,0,Red)<0)
@@ -632,7 +634,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
             
             Print("Открываем 10-й ордер Buy");
-                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot;
+                    SearchLastBuyLot();Lot=LastBuyLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_BUY,Lot,Ask,3*k,NULL,NULL,"110",Magic_Number,0,Blue)<0)
@@ -652,7 +654,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
            {
          
             Print("Открываем 10-й ордер Sell");
-            SearchLastSellLot();Lot=LastSellLot*CoefLot;
+            SearchLastSellLot();Lot=LastSellLot*CoefLot2;
             if(IsTradeAllowed()) 
               {
                if(OrderSend(Symbol(),OP_SELL,Lot,Bid,3*k,NULL,NULL,"210",Magic_Number,0,Red)<0)
@@ -685,7 +687,7 @@ if (ReCountBuy>1) {SearchFirstSellOrder();SearchLokBuyOrdersProfit();OrderSelect
       GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
       SearchFirstSellOrder();
            OrderSelect(Ticket, SELECT_BY_TICKET);
-                 if ((OrderLots()>CriticalLot)){GoGoBuy=OrderLots()/Lot1;}
+                 if ((OrderLots()>CriticalLot)){GoGoBuy=OrderLots()/Lot1/KKLok;}
               }    
                
      if(SellGoToZero==false){NoDeleteBuyProfit=true;}
@@ -711,7 +713,7 @@ if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUYSTOP,Lot1*GoGoBuy,High[1
            SearchFirstBuyOrder();
            OrderSelect(Ticket, SELECT_BY_TICKET);   
            
-                     if ((OrderLots()>CriticalLot)){GoGoSell=OrderLots()/Lot1;}
+                     if ((OrderLots()>CriticalLot)){GoGoSell=OrderLots()/Lot1/KKLok;}
          if(BuyGoToZero==false){NoDeleteSellProfit=true;}
          
       Print("Размещение первого ордера на продажу");
@@ -1353,7 +1355,7 @@ double SellSTOPDel()
 
 
 //+------------------------------------------------------------------+
-//|                                                                  |
+//|                           SearchLastSellLot                                       |
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
