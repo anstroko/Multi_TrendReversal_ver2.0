@@ -52,6 +52,8 @@ extern int Spread=3;
 int ss;
 int bb; 
 double TP1;
+bool BuyLok;
+bool SellLok;
 int k;
 double Lot;
 double LastBuyLot;
@@ -171,9 +173,7 @@ ObjectSetText("label_object3","Текущая просадка="+DoubleToStr(TotalProfit,2),12,
      SearchLokSellOrdersProfit();  SearchLokBuyOrdersProfit();
     TotalProfit=SellOrdersProfit+BuyOrdersProfit;
    
-   ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;bb=0;ss=0;
-   //SellGoToZero=false;BuyGoToZero=false;
-   //if (SecondBuySeries==true){bb=1;}if (ThirdBuySeries==true){bb=2;}if (SecondSellSeries==true){ss=1;}if (ThirdSellSeries==true){ss=2;}
+   ReCountBuy=0;ReCountSell=0;ReBuyLots=0;ReSellLots=0;bb=0;ss=0;BuyLok=false;SellLok=false;
    for(int in=0;in<OrdersTotal();in++)
      {      if(OrderSelect(in,SELECT_BY_POS)==true)
         {
@@ -181,6 +181,8 @@ ObjectSetText("label_object3","Текущая просадка="+DoubleToStr(TotalProfit,2),12,
            {
             if(OrderType()==OP_BUY){ReCountBuy=ReCountBuy+1;ReBuyLots=ReBuyLots+OrderLots(); }
             if(OrderType()==OP_SELL){ReCountSell=ReCountSell+1;ReSellLots=ReSellLots+OrderLots();}
+            if (OrderComment()=="BuyLok"){BuyLok=true;}
+               if (OrderComment()=="SellLok"){SellLok=true;}
            }
         }
      }
@@ -205,14 +207,14 @@ if((ReCountSell==0)&&(SellGoToZero==false)&&(CloseLokS==true)){Print("Закрылись 
 if ((OnlyToZeroBuy==true)&&(ReCountBuy==0)&&(CountBuy!=0)){Print("Закрылись в 0, дальше работаем с ТР");OnlyToZeroBuy=false;}
 if ((OnlyToZeroSell==true)&&(ReCountSell==0)&&(CountSell!=0)){Print("Закрылись в 0, дальше работаем с ТР");OnlyToZeroSell=false;}
 
-if((ReCountBuy>0)&&(OnlyToZeroBuy==false)&&((SellGoToZero==false)||(NoDeleteBuyProfit==true))&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){Print("Произошли изменения,пересчитаем профит у buy ордеров");CalculateTotalBuyTP();}
-if((ReCountSell>0)&&(OnlyToZeroSell==false)&&((BuyGoToZero==false)||(NoDeleteSellProfit==true))&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){Print("Произошли изменения,пересчитаем профит у sell ордеров");CalculateTotalSellTP();}
+if((BuyLok==false)&&(ReCountBuy>0)&&(OnlyToZeroBuy==false)&&((SellGoToZero==false)||(NoDeleteBuyProfit==true))&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){Print("Произошли изменения,пересчитаем профит у buy ордеров");CalculateTotalBuyTP();}
+if((SellLok==false)&&(ReCountSell>0)&&(OnlyToZeroSell==false)&&((BuyGoToZero==false)||(NoDeleteSellProfit==true))&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){Print("Произошли изменения,пересчитаем профит у sell ордеров");CalculateTotalSellTP();}
 
 
+if((BuyLok==true)&&(CountSell==0)){CalculateTotalBuyTP();}
+if ((SellLok==true)&&(CountBuy==0)){CalculateTotalSellTP();}
 
-
-
-
+/*
  SellOrdersProfit=0; BuyOrdersProfit=0; FirstBuyOrderProfit=0; FirstSellOrderProfit=0;SecondBuyOrderProfit=0; SecondSellOrderProfit=0;
 
 
@@ -232,7 +234,7 @@ if (ReCountBuy>0) {
 CheckBuyTP();
 }
 }
- 
+ */
    CountBuy=0;CountSell=0;TotalSlt=0;TotalBLt=0;OrderSwaps=0;total=OrdersTotal();LastBuyPrice=0;LastSellPrice=0;BuyLots=0;SellLots=0;
    //CloseLokB=false;CloseLokS=false;
    
@@ -288,7 +290,7 @@ CheckBuyTP();
 
      
       //#Размещение 2-ого buy
-      if((CountBuy==1) && (BuyTrade==true))
+      if((CountBuy==1) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          for(int ibuy=0;ibuy<OrdersTotal();ibuy++)
            {
@@ -303,11 +305,7 @@ CheckBuyTP();
                  }
                  else {Lot=NormalizeDouble(OrderLots()*CoefLot2,2); if (Lot>CritLot){Lot=CritLot;}}
                  
-                 }
-                 
-                 
-                 
-                 
+                 }               
               }
            }
          if(Ask<(LastBuyPrice-Level1*kLevelBuy*k*Point))
@@ -325,7 +323,7 @@ CheckBuyTP();
 
 
       //#Размещение 2-ого sell
-      if((CountSell==1) && (SellTrade==true))
+      if((CountSell==1) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          for(int isell=0;isell<OrdersTotal();isell++)
            {
@@ -361,7 +359,7 @@ CheckBuyTP();
 
 
            //#Размещение 3-ого buy
-      if((CountBuy==2) && (BuyTrade==true))
+      if((CountBuy==2) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -387,7 +385,7 @@ CheckBuyTP();
 
 
      //#Размещение 3-ого sell
-      if((CountSell==2) && (SellTrade==true))
+      if((CountSell==2) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -410,7 +408,7 @@ CheckBuyTP();
         }
 
    //#Размещение 4-ого buy
-      if((CountBuy==3) && (BuyTrade==true))
+      if((CountBuy==3) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -433,7 +431,7 @@ CheckBuyTP();
 
 
 //#Размещение 4-ого  sell
-      if((CountSell==3) && (SellTrade==true))
+      if((CountSell==3) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -456,7 +454,7 @@ CheckBuyTP();
 
 
    //#Размещение 5-ого buy
-      if((CountBuy==4) && (BuyTrade==true))
+      if((CountBuy==4) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -479,7 +477,7 @@ CheckBuyTP();
 
 
       //#Размещение 5-ого  sell
-      if((CountSell==4) && (SellTrade==true))
+      if((CountSell==4) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -500,7 +498,7 @@ CheckBuyTP();
         }
 
     //#Размещение 6-ого buy
-      if((CountBuy==5) && (BuyTrade==true))
+      if((CountBuy==5) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -523,7 +521,7 @@ CheckBuyTP();
 
 
      //#Размещение 6-ого  sell
-      if((CountSell==5) && (SellTrade==true))
+      if((CountSell==5) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -544,7 +542,7 @@ CheckBuyTP();
            }
         }
     //#Размещение 7-ого buy
-      if((CountBuy==6) && (BuyTrade==true))
+      if((CountBuy==6) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -567,7 +565,7 @@ CheckBuyTP();
 
 
    //#Размещение 7-ого  sell
-      if((CountSell==6) && (SellTrade==true))
+      if((CountSell==6) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -590,7 +588,7 @@ CheckBuyTP();
 
 
      //#Размещение 8-ого buy
-      if((CountBuy==7) && (BuyTrade==true))
+      if((CountBuy==7) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -613,7 +611,7 @@ CheckBuyTP();
 
 
 //#Размещение 8-ого sell
-      if((CountSell==7) && (SellTrade==true))
+      if((CountSell==7) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -636,7 +634,7 @@ CheckBuyTP();
 
 
 //#Размещение 9-ого buy
-      if((CountBuy==8) && (BuyTrade==true))
+      if((CountBuy==8) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -656,7 +654,7 @@ CheckBuyTP();
 
 
 //#Размещение 9-ого sell
-      if((CountSell==8) && (SellTrade==true))
+      if((CountSell==8) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -675,7 +673,7 @@ CheckBuyTP();
         }
 
 //#Размещение 10-ого buy
-      if((CountBuy==9) && (BuyTrade==true))
+      if((CountBuy==9) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -695,7 +693,7 @@ CheckBuyTP();
 
 
 //#Размещение 10-ого sell
-      if((CountSell==9) && (SellTrade==true))
+      if((CountSell==9) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -730,17 +728,31 @@ CheckBuyTP();
       }
          } 
          
-         
+ if ((SellGoToZero==true)&&(BuyLok==false))     
+ {
+  Print("Открываем лок на покупку");
+  GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
+ if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
+ if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUY,Lot1*GoGoBuy,Ask,3*k,NULL,NULL,"BuyLok",Magic_Number,0,Blue) < 0) 
+      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
+ 
+ }
+
+ if ((BuyGoToZero==true)&&(SellLok==false))     
+ {
+  Print("Открываем лок на продажу");
+ GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
+         if (GoGoSell>CritKoef){GoGoSell=CritKoef;}
+ if(OrderSend(Symbol(),OP_SELL,Lot1*GoGoSell,Bid,3*k,NULL,NULL,"SellLok",Magic_Number,0,Red) < 0)
+           {Alert("Произошла ошибка",GetLastError()); }
+ 
+ }
+    
          
 //#Открытие первого ордера buy
-   if((ReCountBuy==0) && (BuyTrade==true)&&((((Open[1]-Close[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(SellGoToZero==true)||(CountSell==Lok)))
+   if((ReCountBuy==0)&&(SellGoToZero==false) && (BuyTrade==true)&&((((Open[1]-Close[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(CountSell==Lok)))
      {   NoDeleteBuyProfit=false; GoGoBuy=1;ZeroB1=false;ZeroB2=false;
-     if(SellGoToZero==true){
-      GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
- 
-      
-                if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
-              }    
+     
                
      if(SellGoToZero==false){NoDeleteBuyProfit=true;}
      
@@ -758,7 +770,7 @@ else {if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUY,Lot1*GoGoBuy,Ask,
       {Alert("Ошибка открытия позиции № ", GetLastError()); }}}
      } 
 //#Открытие первого ордера sell
-   if((ReCountSell==0) && (SellTrade==true)&&((((Close[1]-Open[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(BuyGoToZero==true)||(CountBuy==Lok)))
+   if((ReCountSell==0)&&(BuyGoToZero==false) && (SellTrade==true)&&((((Close[1]-Open[1])>BodySize*k*Point)&&((High[1]-Low[1])>CandleSize*k*Point))||(CountBuy==Lok)))
      {
      
         NoDeleteSellProfit=false;GoGoSell=1;ZeroS1=false;ZeroS2=false;
@@ -873,8 +885,10 @@ TPB=0;
            {
             if(( OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)) 
               {
-               RefreshRates();
-               OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPB,0,Orange); 
+               
+               bool res=OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPB,0,Orange);
+               if(!res)
+                 { OrderClose(OrderTicket(),OrderLots(),Bid,3*k,Black); }
               }
            }
         }
@@ -907,7 +921,9 @@ TPB=0;
               {
                RefreshRates();
                     if ((CountB==1)&&(OrderTakeProfit()!=NULL)){break;}
-               OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPB,0,Orange); 
+               if (OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPB,0,Orange)<0)
+                { OrderClose(OrderTicket(),OrderLots(),Bid,3*k,Black); }
+               
               }
            }
         }
@@ -943,7 +959,8 @@ TPB=0;
               {
                RefreshRates();
                if ((CountS==1)&&(OrderTakeProfit()!=NULL)){break;}
-               OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPS,0,Orange); 
+              if( OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),TPS,0,Orange)<0) 
+                 { OrderClose(OrderTicket(),OrderLots(),Ask,3*k,Black); }
               }
            }
         }
