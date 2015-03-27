@@ -777,7 +777,7 @@ CheckBuyTP();
          
    if (Hour()==0){
    if ((BuyLok==true)&&(BuyLok2==false)){
-        double LokStartPrice=iHigh(NULL,PERIOD_D1,1);
+        double LokStartPrice=iHigh(NULL,PERIOD_H1,1);
          GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
  if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
          if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUYSTOP,Lot1*GoGoBuy,LokStartPrice,3*k,NULL,NULL,"BuyLok2",Magic_Number,0,Blue) < 0) 
@@ -785,7 +785,7 @@ CheckBuyTP();
  
                     }
      if ((SellLok==true)&&(SellLok2==false)){
-        double LokStartPrice=iLow(NULL,PERIOD_D1,1);
+        double LokStartPrice=iLow(NULL,PERIOD_H1,1);
  GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
          if (GoGoSell>CritKoef){GoGoSell=CritKoef;}
          if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_SELLSTOP,Lot1*GoGoSell,LokStartPrice,3*k,NULL,NULL,"SellLok2",Magic_Number,0,Red) < 0) 
