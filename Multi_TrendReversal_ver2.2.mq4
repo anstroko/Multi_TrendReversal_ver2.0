@@ -219,8 +219,8 @@ if((SellLok==false)&&(ReCountSell>1)&&(OnlyToZeroSell==false)&&((BuyGoToZero==fa
 
 if((BuyLok==true)&&(SellGoToZero==false)&&(ReCountBuy>1)&& ((ReBuyLots<BuyLots) || (ReBuyLots>BuyLots))){CalculateTotalBuyTP();}
 if ((SellLok==true)&&(BuyGoToZero==false)&&(ReCountSell>1)&& ((ReSellLots<SellLots) || (ReSellLots>SellLots))){CalculateTotalSellTP();}
-if((BuyLok==true)&&(ReCountSell==0)&&(CountSell>=OrdersToZero)){CalculateTotalBuyTP();}
-if((SellLok==true)&&(ReCountBuy==0)&&(CountBuy>=OrdersToZero)){CalculateTotalSellTP();}
+if((BuyLok==true)&&(ReCountSell==0)&&(CloseLokS==true)){CalculateTotalBuyTP();}
+if((SellLok==true)&&(ReCountBuy==0)&&(CloseLokB==true)){CalculateTotalSellTP();}
 
 
 
@@ -776,7 +776,7 @@ CheckBuyTP();
     
          
    if (Hour()==0){
-   if ((BuyLok==true)&&(BuyLok2==false)){
+   if ((BuyLok==true)&&(CloseLokB==false)&&(BuyLok2==false)){
         double LokStartPrice=iHigh(NULL,PERIOD_H1,1);
          GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
  if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
@@ -784,7 +784,7 @@ CheckBuyTP();
       {Alert("Ошибка открытия позиции № ", GetLastError()); }}
  
                     }
-     if ((SellLok==true)&&(SellLok2==false)){
+     if ((SellLok==true)&&(CloseLokS==false)&&(SellLok2==false)){
         double LokStartPrice=iLow(NULL,PERIOD_H1,1);
  GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
          if (GoGoSell>CritKoef){GoGoSell=CritKoef;}
