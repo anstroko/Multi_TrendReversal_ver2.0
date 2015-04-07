@@ -119,6 +119,8 @@ int DeGreeSell;
 double kLevelSell;
 double kLevelBuy;
 double TotalProfit;
+string BComment;
+string SComment;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -299,7 +301,7 @@ CheckBuyTP();
 
      
       //#Размещение 2-ого buy
-      if((CountBuy==1) && (BuyTrade==true)&&(SellGoToZero==false))
+      if((CountBuy==1) && (BuyTrade==true)&&(SellGoToZero==false)&&(BuyGoToZero==false))
         {
          for(int ibuy=0;ibuy<OrdersTotal();ibuy++)
            {
@@ -332,7 +334,7 @@ CheckBuyTP();
 
 
       //#Размещение 2-ого sell
-      if((CountSell==1) && (SellTrade==true)&&(BuyGoToZero==false))
+      if((CountSell==1) && (SellTrade==true)&&(BuyGoToZero==false)&&(SellGoToZero==false))
         {
          for(int isell=0;isell<OrdersTotal();isell++)
            {
@@ -368,7 +370,7 @@ CheckBuyTP();
 
 
            //#Размещение 3-ого buy
-      if((CountBuy==2) && (BuyTrade==true)&&(SellGoToZero==false))
+      if((CountBuy==2) && (BuyTrade==true)&&(SellGoToZero==false)&&(BuyGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -394,7 +396,7 @@ CheckBuyTP();
 
 
      //#Размещение 3-ого sell
-      if((CountSell==2) && (SellTrade==true)&&(BuyGoToZero==false))
+      if((CountSell==2) && (SellTrade==true)&&(BuyGoToZero==false)&&(SellGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -417,7 +419,7 @@ CheckBuyTP();
         }
 
    //#Размещение 4-ого buy
-      if((CountBuy==3) && (BuyTrade==true)&&(SellGoToZero==false))
+      if((CountBuy==3) && (BuyTrade==true)&&(SellGoToZero==false)&&(BuyGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -440,7 +442,7 @@ CheckBuyTP();
 
 
 //#Размещение 4-ого  sell
-      if((CountSell==3) && (SellTrade==true)&&(BuyGoToZero==false))
+      if((CountSell==3) && (SellTrade==true)&&(BuyGoToZero==false)&&(SellGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -461,9 +463,12 @@ CheckBuyTP();
            }
         }
 
-
+BuyComment();
+SellComment();
    //#Размещение 5-ого buy
-      if((CountBuy==4) && (BuyTrade==true)&&(SellGoToZero==false))
+   
+   //Print("BComment",BComment);
+      if(((CountBuy==4)||(BComment=="14")) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -486,7 +491,7 @@ CheckBuyTP();
 
 
       //#Размещение 5-ого  sell
-      if((CountSell==4) && (SellTrade==true)&&(BuyGoToZero==false))
+      if(((CountSell==4)||(SComment=="24")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -507,7 +512,7 @@ CheckBuyTP();
         }
 
     //#Размещение 6-ого buy
-      if((CountBuy==5) && (BuyTrade==true)&&(SellGoToZero==false))
+      if(((CountBuy==5)||(BComment=="15"))  && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -530,7 +535,7 @@ CheckBuyTP();
 
 
      //#Размещение 6-ого  sell
-      if((CountSell==5) && (SellTrade==true)&&(BuyGoToZero==false))
+      if(((CountSell==5)||(SComment=="25")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -551,7 +556,7 @@ CheckBuyTP();
            }
         }
     //#Размещение 7-ого buy
-      if((CountBuy==6) && (BuyTrade==true)&&(SellGoToZero==false))
+      if(((CountBuy==6)||(BComment=="16")) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -574,7 +579,7 @@ CheckBuyTP();
 
 
    //#Размещение 7-ого  sell
-      if((CountSell==6) && (SellTrade==true)&&(BuyGoToZero==false))
+      if(((CountSell==6)||(SComment=="26")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -597,7 +602,7 @@ CheckBuyTP();
 
 
      //#Размещение 8-ого buy
-      if((CountBuy==7) && (BuyTrade==true)&&(SellGoToZero==false))
+      if(((CountBuy==7)||(BComment=="17")) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -620,7 +625,7 @@ CheckBuyTP();
 
 
 //#Размещение 8-ого sell
-      if((CountSell==7) && (SellTrade==true)&&(BuyGoToZero==false))
+     if(((CountSell==7)||(SComment=="27")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -643,7 +648,7 @@ CheckBuyTP();
 
 
 //#Размещение 9-ого buy
-      if((CountBuy==8) && (BuyTrade==true)&&(SellGoToZero==false))
+      if(((CountBuy==8)||(BComment=="18")) && (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -663,7 +668,7 @@ CheckBuyTP();
 
 
 //#Размещение 9-ого sell
-      if((CountSell==8) && (SellTrade==true)&&(BuyGoToZero==false))
+      if(((CountSell==8)||(SComment=="28")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -682,7 +687,7 @@ CheckBuyTP();
         }
 
 //#Размещение 10-ого buy
-      if((CountBuy==9) && (BuyTrade==true)&&(SellGoToZero==false))
+     if(((CountBuy==9)||(BComment=="19"))&& (BuyTrade==true)&&(SellGoToZero==false))
         {
          SearchLastBuyPrice();
 
@@ -702,7 +707,7 @@ CheckBuyTP();
 
 
 //#Размещение 10-ого sell
-      if((CountSell==9) && (SellTrade==true)&&(BuyGoToZero==false))
+      if(((CountSell==9)||(SComment=="29")) && (SellTrade==true)&&(BuyGoToZero==false))
         {
          SearchLastSellPrice();
 
@@ -1451,9 +1456,26 @@ double SearchSecondSellOrder() {
    return(0);
   }
 
+double BuyComment(){
+
+for (int iii=OrdersTotal()-1;iii>=0;iii--){
+if(OrderSelect(iii,SELECT_BY_POS)==true){
+if((OrderSymbol()==Symbol()) && (OrderType()==OP_BUY)&&(Magic_Number==OrderMagicNumber()))
+{BComment=OrderComment();break;}}}
 
 
 
+
+return(BComment);}
+
+double SellComment(){
+
+for (int iii=OrdersTotal()-1;iii>=0;iii--){
+if(OrderSelect(iii,SELECT_BY_POS)==true){
+if((OrderSymbol()==Symbol()) && (OrderType()==OP_SELL)&&(Magic_Number==OrderMagicNumber()))
+{SComment=OrderComment();break;}}}
+
+return(SComment);}
 //+------------------------------------------------------------------+
 //|                           SearchLastSellLot                                       |
 //+------------------------------------------------------------------+
