@@ -20,7 +20,7 @@ extern int CandleSize=0;
 extern int OrdersToZero=5;
 extern int TP=10;
 extern int TP2=1;
-
+extern double Lot2=3;
 extern double BonusDollar=1;
 extern int Magic_Number=321;
 extern double kLevel=2;
@@ -732,6 +732,56 @@ SellComment();
               }
            }
         }
+        
+           
+ if ((SellGoToZero==true)&&(BuyLok==false))     
+ {
+  Print("Открываем лок на покупку");
+  GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
+
+ if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUY,Lot1*GoGoBuy,Ask,3*k,NULL,NULL,"BuyLok",Magic_Number,0,Blue) < 0) 
+      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
+ 
+ }
+
+ if ((BuyGoToZero==true)&&(SellLok==false))     
+ {
+  Print("Открываем лок на продажу");
+ GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
+   
+ if(OrderSend(Symbol(),OP_SELL,Lot1*GoGoSell,Bid,3*k,NULL,NULL,"SellLok",Magic_Number,0,Red) < 0)
+           {Alert("Произошла ошибка",GetLastError()); }
+ 
+ }
+    
+         
+   
+   if ((BuyLok==true)&&(BuyLok2==false)&&((((iMA(NULL,5,140,0,MODE_SMA,PRICE_CLOSE,1)+20*Point*k)<Close[1])&&(iATR(NULL,5,22,1)>0.0002)&&(iWPR(NULL,5,21,1)<-95)&&(iCCI(Symbol(),5,15,PRICE_TYPICAL,1)<-95))||(((iMA(NULL,15,110,0,MODE_SMA,PRICE_CLOSE,1)+25*Point*k)<Close[1])&&(iATR(NULL,15,22,1)>0.0002)&&(iWPR(NULL,15,22,1)<-95)&&(iCCI(Symbol(),15,16,PRICE_TYPICAL,1)<-95)))){
+            
+       //  GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
+
+         if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUY,Lot2,Ask,3*k,NULL,NULL,"BuyLok2",Magic_Number,0,Blue) < 0) 
+      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
+ 
+                    }
+     if ((SellLok==true)&&(SellLok2==false)&&((((iMA(NULL,5,140,0,MODE_SMA,PRICE_CLOSE,1)-20*Point*k)>Close[1])&&(iATR(NULL,5,22,1)>0.0002)&&(iWPR(NULL,5,21,1)>-5)&&(iCCI(Symbol(),5,15,PRICE_TYPICAL,1)>90))||(((iMA(NULL,15,110,0,MODE_SMA,PRICE_CLOSE,1)+25*Point*k)<Close[1])&&(iATR(NULL,15,22,1)>0.0002)&&(iWPR(NULL,15,22,1)<-95)&&(iCCI(Symbol(),15,16,PRICE_TYPICAL,1)<-95)))){
+   
+ //GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
+  
+         if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_SELL,Lot2,Bid,3*k,NULL,NULL,"SellLok2",Magic_Number,0,Red) < 0) 
+      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
+ 
+                    }    
+        
+         
+                   
+        
+        
+        
+        
+        
+        
+        
  if(!isNewBar())return(0);
  Sleep(SleepingTime*100);
 
@@ -766,48 +816,7 @@ SellComment();
          
        
          
-         
- if ((SellGoToZero==true)&&(BuyLok==false))     
- {
-  Print("Открываем лок на покупку");
-  GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
- if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
- if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUY,Lot1*GoGoBuy,Ask,3*k,NULL,NULL,"BuyLok",Magic_Number,0,Blue) < 0) 
-      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
- 
- }
 
- if ((BuyGoToZero==true)&&(SellLok==false))     
- {
-  Print("Открываем лок на продажу");
- GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
-         if (GoGoSell>CritKoef){GoGoSell=CritKoef;}
- if(OrderSend(Symbol(),OP_SELL,Lot1*GoGoSell,Bid,3*k,NULL,NULL,"SellLok",Magic_Number,0,Red) < 0)
-           {Alert("Произошла ошибка",GetLastError()); }
- 
- }
-    
-         
-   if ((Hour()==0)||(Hour()==4)||(Hour()==8)||(Hour()==12)||(Hour()==16)||(Hour()==20)){
-   if ((BuyLok==true)&&(BuyLok2==false)){
-        double LokStartPrice=iHigh(NULL,PERIOD_H4,1);
-         GoGoBuy=SellLots*Percent/100/Lot1;NormalizeDouble(GoGoBuy,2);
- if (GoGoBuy>CritKoef){GoGoBuy=CritKoef;}
-         if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_BUYSTOP,Lot1*GoGoBuy,LokStartPrice,3*k,NULL,NULL,"BuyLok2",Magic_Number,0,Blue) < 0) 
-      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
- 
-                    }
-     if ((SellLok==true)&&(SellLok2==false)){
-        double LokStartPrice=iLow(NULL,PERIOD_H4,1);
- GoGoSell=BuyLots*Percent/100/Lot1;NormalizeDouble(GoGoSell,2);  
-         if (GoGoSell>CritKoef){GoGoSell=CritKoef;}
-         if (IsTradeAllowed()) { if(    OrderSend(Symbol(),OP_SELLSTOP,Lot1*GoGoSell,LokStartPrice,3*k,NULL,NULL,"SellLok2",Magic_Number,0,Red) < 0) 
-      {Alert("Ошибка открытия позиции № ", GetLastError()); }}
- 
-                    }    
-        
-         
-         }        
          
          
          
