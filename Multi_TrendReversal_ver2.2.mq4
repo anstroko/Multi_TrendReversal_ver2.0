@@ -25,12 +25,11 @@ extern double BonusDollar=1;
 extern int Magic_Number=321;
 extern double kLevel=2;
 extern double Percent=25;
-extern double CritKoef=3;
+
 
 extern int Lok=3;
 extern int SleepingTime=3;
 
-extern double CritLot=3;
 extern int Index=1;
 
 extern string Параметры2="Уровни открытия хеджирующих ордеров Buy/Sell";
